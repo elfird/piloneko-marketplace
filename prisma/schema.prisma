@@ -1,0 +1,227 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+enum CategoryType {
+  PREMIUM_ACCOUNT
+  GAME_TOPUP
+  LICENSE
+}
+
+model Category {
+  id        Int          @id @default(autoincrement())
+  name      String
+  slug      String       @unique
+  icon      String?      // Lucide icon name, e.g., "Compass", "Gamepad", "Key"
+  type      CategoryType
+  isActive  Boolean      @default(true)
+  sortOrder Int          @default(0)
+  products  Product[]
+}
+
+model Product {
+  id             String           @id @default(uuid())
+  categoryId     Int
+  category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name           String
+  slug           String           @unique
+  description    String @db.Text
+  thumbnail      String // Image URL or placeholder
+  isActive       Boolean          @default(true)
+  isFeatured     Boolean          @default(false)
+  totalSold      Int              @default(0)
+  createdAt      DateTime         @default(now())
+  seoTitle       String?
+  seoDescription String?          @db.Text
+  seoKeywords    String?
+  seoOgImage     String?
+  packages       ProductPackage[]
+  reviews        Review[]
+  FlashSaleItem  FlashSaleItem[]
+}
+
+model ProductPackage {
+  id            String         @id @default(uuid())
+  productId     String
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label         String // e.g. "1 Bulan - Shared", "1 Bulan - Private"
+  price         Float
+  originalPrice Float
+  durationDays  Int
+  warrantyDays  Int
+  maxDevices    Int            @default(1)
+  stockCount    Int            @default(0)
+  isActive      Boolean        @default(true)
+  accountStocks AccountStock[]
+  FlashSaleItem FlashSaleItem[]
+}
+
+model AccountStock {
+  id           String         @id @default(uuid())
+  packageId    String
+  package      ProductPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  emailAkun    String
+  passwordAkun String
+  infoTambahan String?
+  status       String         @default("AVAILABLE") // "AVAILABLE", "SOLD", "REPLACED"
+  soldAt       DateTime?
+  orders       Order[]
+}
+
+model Order {
+  id             String        @id @default(uuid())
+  refCode        String        @unique // e.g. REF-12345
+  productId      String
+  packageId      String
+  accountStockId String?
+  accountStock   AccountStock? @relation(fields: [accountStockId], references: [id], onDelete: SetNull)
+  buyerName      String
+  buyerWa        String
+  productName    String
+  packageName    String
+  price          Float
+  status         String        @default("PENDING") // "PENDING", "CONFIRMED", "SENT", "CANCELLED"
+  adminNote      String?
+  createdAt      DateTime      @default(now())
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  buyerName  String
+  rating     Int
+  comment    String @db.Text
+  isApproved Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model WaTemplate {
+  id           String   @id @default(uuid())
+  key          String   @unique
+  label        String
+  templateText String @db.Text
+  isActive     Boolean  @default(true)
+  updatedAt    DateTime @updatedAt
+}
+
+model FlashSaleItem {
+  id        String         @id @default(uuid())
+  productId String
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  packageId String
+  package   ProductPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  salePrice Float
+  isActive  Boolean        @default(true)
+}
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  buyerName   String
+  avatarUrl   String
+  rating      Int
+  comment     String @db.Text
+  productName String
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model FaqItem {
+  id        String  @id @default(uuid())
+  question  String
+  answer    String @db.Text
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+}
+
+model SiteContent {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String @db.Text
+  type  String // TEXT | RICHTEXT | IMAGE | COLOR | NUMBER | BOOLEAN
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  adminId     String?
+  action      String
+  entityType  String?
+  entityId    String?
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+}
+
+model Voucher {
+  id            String   @id @default(uuid())
+  code          String   @unique
+  description   String   @db.Text
+  discountType  String   // "PERCENTAGE" | "FIXED"
+  discountValue Float
+  minPurchase   Float    @default(0)
+  maxUsage      Int      @default(999)
+  usageCount    Int      @default(0)
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
+
+model WarrantyTicket {
+  id            String   @id @default(uuid())
+  refCode       String   @unique
+  orderId       String
+  buyerName     String
+  buyerWa       String
+  problem       String   @db.Text
+  status        String   @default("OPEN") // OPEN | PROCESSING | RESOLVED | REJECTED
+  adminResponse String?  @db.Text
+  createdAt     DateTime @default(now())
+}
+
+model Banner {
+  id        String   @id @default(uuid())
+  title     String
+  subtitle  String?
+  image     String
+  link      String?
+  position  Int      @default(0)
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model SupportTicket {
+  id         String   @id @default(uuid())
+  refCode    String   @unique
+  buyerName  String
+  buyerWa    String
+  subject    String
+  message    String   @db.Text
+  status     String   @default("OPEN") // OPEN | REPLIED | CLOSED
+  adminReply String?  @db.Text
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String   @db.Text
+  type      String   // ORDER | WARRANTY | STOCK | REVIEW
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

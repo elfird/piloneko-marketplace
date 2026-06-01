@@ -1,0 +1,6 @@
+{
+  "name": "PremiumKu",
+  "description": "Marketplace jual beli akun premium dan top up game dengan transaksi via WhatsApp",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
