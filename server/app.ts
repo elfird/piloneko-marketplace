@@ -42,8 +42,8 @@ app.use(
 
 // CORS — izinkan origin dari env atau localhost dev
 const allowedOrigins = process.env.APP_URL
-  ? [process.env.APP_URL, "http://localhost:3000"]
-  : ["http://localhost:3000", "http://localhost:5173"];
+  ? [process.env.APP_URL, "https://piloneko.com", "http://localhost:3000", "http://localhost:5173"]
+  : ["https://piloneko.com", "http://localhost:3000", "http://localhost:5173"];
 
 app.use(
   cors({

@@ -2665,7 +2665,7 @@ app.use(
     crossOriginEmbedderPolicy: false
   })
 );
-var allowedOrigins = process.env.APP_URL ? [process.env.APP_URL, "http://localhost:3000"] : ["http://localhost:3000", "http://localhost:5173"];
+var allowedOrigins = process.env.APP_URL ? [process.env.APP_URL, "https://piloneko.com", "http://localhost:3000", "http://localhost:5173"] : ["https://piloneko.com", "http://localhost:3000", "http://localhost:5173"];
 app.use(
   (0, import_cors.default)({
     origin: (origin, callback) => {
