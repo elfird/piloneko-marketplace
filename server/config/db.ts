@@ -25,9 +25,7 @@ const connectDB = async () => {
 
     // Gunakan global cache untuk menghindari banyak koneksi di serverless cold start
     if (!global._mongooseConnection) {
-      global._mongooseConnection = mongoose.connect(mongoURI, {
-        bufferCommands: false,
-      });
+      global._mongooseConnection = mongoose.connect(mongoURI);
     }
 
     const conn = await global._mongooseConnection;

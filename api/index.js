@@ -275,9 +275,7 @@ var connectDB = async () => {
       return;
     }
     if (!global._mongooseConnection) {
-      global._mongooseConnection = import_mongoose.default.connect(mongoURI, {
-        bufferCommands: false
-      });
+      global._mongooseConnection = import_mongoose.default.connect(mongoURI);
     }
     const conn = await global._mongooseConnection;
     console.log(`MongoDB Connected: ${conn.connection.host}`);
@@ -2718,3 +2716,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || "Internal Server Error" });
 });
 var app_default = app;
+//# sourceMappingURL=index.js.map
