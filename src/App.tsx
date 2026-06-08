@@ -98,10 +98,6 @@ export default function App() {
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : "0, 245, 255";
   };
 
-  if (isLoading) {
-    return <CyberLoading />;
-  }
-
   const [isOffline, setIsOffline] = React.useState(!navigator.onLine);
 
   useEffect(() => {
@@ -116,6 +112,10 @@ export default function App() {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
+
+  if (isLoading) {
+    return <CyberLoading />;
+  }
 
   if (isOffline) {
     return (
