@@ -38,6 +38,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const { adminToken, adminProfileName, logout } = useAuthStore();
   const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Derive current view from URL for Sidebar highlighting
   const currentView = location.pathname.split('/').pop() || 'dashboard';
@@ -81,6 +82,11 @@ export default function AdminLayout() {
     navigate("/");
   };
 
+  const handleViewChange = (view: string) => {
+    navigate(`/admin/${view}`);
+    setSidebarOpen(false); // Auto close sidebar on mobile after navigation
+  }
+
   if (!adminToken && !localStorage.getItem('token')) {
     return null; // Will redirect in useEffect
   }
@@ -89,32 +95,50 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen flex h-screen overflow-hidden bg-cyber-bg text-gray-200">
+      {/* Sidebar Overlay for Mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar handles navigation via its onChangeView prop */}
-      <Sidebar
-        currentView={currentView}
-        onChangeView={(view) => navigate(`/admin/${view}`)}
-        adminName={adminProfileName || localStorage.getItem('adminName') || "Admin"}
-        onLogout={handleLogout}
-        onNavigateHome={() => navigate("/")}
-      />
+      <div className={`fixed inset-y-0 left-0 z-50 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out h-full`}>
+        <Sidebar
+          currentView={currentView}
+          onChangeView={handleViewChange}
+          adminName={adminProfileName || localStorage.getItem('adminName') || "Admin"}
+          onLogout={handleLogout}
+          onNavigateHome={() => navigate("/")}
+        />
+      </div>
 
       {/* Main workspace */}
-      <main className="flex-1 bg-cyber-bg overflow-y-auto p-8 relative flex flex-col">
+      <main className="flex-1 bg-cyber-bg overflow-y-auto p-4 md:p-8 relative flex flex-col w-full min-w-0">
         <div className="absolute top-0 right-10 w-96 h-96 bg-accent-primary/2 rounded-full blur-[100px] pointer-events-none" />
 
         {/* Cyber Header Topbar */}
         <div className="flex items-center justify-between border-b border-cyber-muted/10 pb-4 mb-6 shrink-0 font-orbitron select-none print:hidden">
-          <div className="text-left">
-            <span className="text-cyber-muted text-[8px] sm:text-[9px] tracking-widest font-mono block">
-              PILONEKO SECURE SYSTEMS CENTRAL
-            </span>
-            <h2 className="text-white text-sm sm:text-base font-black tracking-wider uppercase flex items-center gap-1.5">
-              <span className="text-accent-primary">[</span> 
-              {currentView.replace(/_/g, ' ')} 
-              <span className="text-accent-primary">]</span>
-            </h2>
+          <div className="flex items-center gap-3">
+            <button 
+              className="md:hidden text-cyber-muted hover:text-accent-primary p-2 -ml-2 rounded-xs border border-cyber-muted/20 bg-cyber-surface/30"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+            <div className="text-left">
+              <span className="text-cyber-muted text-[8px] sm:text-[9px] tracking-widest font-mono block">
+                PILONEKO SECURE SYSTEMS CENTRAL
+              </span>
+              <h2 className="text-white text-sm sm:text-base font-black tracking-wider uppercase flex items-center gap-1.5">
+                <span className="text-accent-primary">[</span> 
+                {currentView.replace(/_/g, ' ')} 
+                <span className="text-accent-primary">]</span>
+              </h2>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <button
               onClick={() => navigate('/admin/notifications')}
               className="relative p-2 rounded-xs border border-cyber-muted/20 bg-cyber-surface/30 hover:border-accent-primary/50 text-cyber-muted hover:text-accent-primary transition-all duration-200 cursor-pointer"

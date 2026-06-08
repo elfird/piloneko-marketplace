@@ -61,48 +61,50 @@ export const WhatsAppBlastView: React.FC<{ token: string }> = ({ token }) => {
       </div>
 
       <div className="bg-cyber-card border border-accent-primary/20 rounded-xs overflow-hidden">
-        <table className="w-full text-left text-xs text-cyber-muted font-mono">
-          <thead className="bg-cyber-bg border-b border-accent-primary/20 text-white">
-            <tr>
-              <th className="py-3 px-4 uppercase font-bold tracking-wider">Campaign</th>
-              <th className="py-3 px-4 uppercase font-bold tracking-wider">Target</th>
-              <th className="py-3 px-4 uppercase font-bold tracking-wider">Status</th>
-              <th className="py-3 px-4 uppercase font-bold tracking-wider">Success</th>
-              <th className="py-3 px-4 uppercase font-bold tracking-wider">Failed</th>
-              <th className="py-3 px-4 uppercase font-bold tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {campaigns.map(c => (
-              <tr key={c.id} className="border-b border-cyber-muted/10 hover:bg-cyber-surface/30">
-                <td className="py-3 px-4 text-white font-sans">{c.campaignName}</td>
-                <td className="py-3 px-4">{c.targetCustomer}</td>
-                <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded-sm text-[9px] ${c.status === 'COMPLETED' ? 'bg-[#25D366]/20 text-[#25D366]' : c.status === 'DRAFT' ? 'bg-cyber-muted/20 text-cyber-muted' : 'bg-accent-primary/20 text-accent-primary'}`}>
-                    {c.status}
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-[#25D366]">{c.successCount}</td>
-                <td className="py-3 px-4 text-red-500">{c.failedCount}</td>
-                <td className="py-3 px-4 text-right">
-                  {c.status === "DRAFT" && (
-                    <button onClick={() => handleSend(c.id)} className="px-3 py-1 bg-accent-primary/20 text-accent-primary hover:bg-accent-primary hover:text-black rounded-xs transition-colors flex items-center gap-1 ml-auto">
-                      <Send className="w-3 h-3" /> SEND NOW
-                    </button>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs text-cyber-muted font-mono">
+            <thead className="bg-cyber-bg border-b border-accent-primary/20 text-white">
+              <tr>
+                <th className="py-3 px-4 uppercase font-bold tracking-wider">Campaign</th>
+                <th className="py-3 px-4 uppercase font-bold tracking-wider">Target</th>
+                <th className="py-3 px-4 uppercase font-bold tracking-wider">Status</th>
+                <th className="py-3 px-4 uppercase font-bold tracking-wider">Success</th>
+                <th className="py-3 px-4 uppercase font-bold tracking-wider">Failed</th>
+                <th className="py-3 px-4 uppercase font-bold tracking-wider text-right">Actions</th>
               </tr>
-            ))}
-            {campaigns.length === 0 && (
-              <tr><td colSpan={6} className="py-8 text-center">No campaigns found.</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {campaigns.map(c => (
+                <tr key={c.id} className="border-b border-cyber-muted/10 hover:bg-cyber-surface/30">
+                  <td className="py-3 px-4 text-white font-sans">{c.campaignName}</td>
+                  <td className="py-3 px-4">{c.targetCustomer}</td>
+                  <td className="py-3 px-4">
+                    <span className={`px-2 py-1 rounded-sm text-[9px] ${c.status === 'COMPLETED' ? 'bg-[#25D366]/20 text-[#25D366]' : c.status === 'DRAFT' ? 'bg-cyber-muted/20 text-cyber-muted' : 'bg-accent-primary/20 text-accent-primary'}`}>
+                      {c.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-[#25D366]">{c.successCount}</td>
+                  <td className="py-3 px-4 text-red-500">{c.failedCount}</td>
+                  <td className="py-3 px-4 text-right">
+                    {c.status === "DRAFT" && (
+                      <button onClick={() => handleSend(c.id)} className="px-3 py-1 bg-accent-primary/20 text-accent-primary hover:bg-accent-primary hover:text-black rounded-xs transition-colors flex items-center gap-1 ml-auto">
+                        <Send className="w-3 h-3" /> SEND NOW
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {campaigns.length === 0 && (
+                <tr><td colSpan={6} className="py-8 text-center">No campaigns found.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <form onSubmit={handleCreate} className="bg-[#0F0F1A] border border-accent-secondary/50 rounded-xs p-6 max-w-lg w-full space-y-4">
+          <form onSubmit={handleCreate} className="bg-[#0F0F1A] border border-accent-secondary/50 rounded-xs p-6 max-w-[95vw] max-h-[85vh] overflow-y-auto w-full md:max-w-lg space-y-4">
             <h2 className="text-lg font-orbitron text-white uppercase tracking-widest">Create Campaign</h2>
             
             <div>

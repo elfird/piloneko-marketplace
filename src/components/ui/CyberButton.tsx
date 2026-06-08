@@ -15,7 +15,7 @@ export const CyberButton: React.FC<CyberButtonProps> = ({
   glowing = true,
   ...props
 }) => {
-  const baseStyle = "font-orbitron tracking-wider uppercase font-medium transition-all duration-300 relative select-none cursor-pointer focus:outline-none flex items-center justify-center gap-2 border overflow-hidden group";
+  const baseStyle = "min-h-[44px] font-orbitron tracking-wider uppercase font-medium transition-all duration-300 relative select-none cursor-pointer focus:outline-none flex items-center justify-center gap-2 border overflow-hidden group";
   
   const variants = {
     primary: "border-accent-primary text-accent-primary hover:bg-accent-primary/10 hover:text-white bg-transparent",
