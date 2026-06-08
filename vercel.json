@@ -9,7 +9,7 @@
       }
     },
     {
-      "src": "api/index.ts",
+      "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
         "maxDuration": 30
