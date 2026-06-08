@@ -1,7 +1,7 @@
-// Shared types and interfaces for the PremiumKu Cyber Marketplace
+// Shared types and interfaces for the Piloneko Cyber Marketplace
 
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   icon?: string | null;
@@ -35,7 +35,7 @@ export interface ProductPackage {
 
 export interface Product {
   id: string;
-  categoryId: number;
+  categoryId: string;
   category?: Category;
   name: string;
   slug: string;

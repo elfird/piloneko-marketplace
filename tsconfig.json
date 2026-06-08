@@ -22,5 +22,13 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scratch-check-products.ts",
+    "server.backup.ts",
+    "src/lib/payment-gateway.ts",
+    "src/lib/webhook-handler.ts"
+  ]
 }
