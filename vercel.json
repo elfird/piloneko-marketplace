@@ -12,19 +12,18 @@
       "src": "api/index.ts",
       "use": "@vercel/node",
       "config": {
-        "maxDuration": 30,
-        "includeFiles": ["server/**", "node_modules/**"]
+        "maxDuration": 30
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.ts"
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
