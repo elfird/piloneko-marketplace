@@ -65,7 +65,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 // Hubungkan ke MongoDB Atlas (Mongoose) — dengan connection caching untuk serverless
-connectDB();
+connectDB().catch(err => console.error("Initial DB connection failed:", err.message));
 
 // ==========================================
 // IMPORT ROUTES
