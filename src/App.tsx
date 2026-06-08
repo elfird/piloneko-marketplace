@@ -2,6 +2,8 @@ import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './store/useStore';
 import { useMidtrans } from './hooks/useMidtrans';
+import { InstallPrompt } from './components/pwa/InstallPrompt';
+import { OfflinePage } from './components/pwa/OfflinePage';
 
 // Lazy loading customer pages (Code splitting)
 const LandingPage = React.lazy(() => import('./pages/customer/LandingPage'));
@@ -100,6 +102,37 @@ export default function App() {
     return <CyberLoading />;
   }
 
+  const [isOffline, setIsOffline] = React.useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  if (isOffline) {
+    return (
+      <div 
+        className="min-h-screen bg-[#0A0A0F] text-gray-200 relative overflow-hidden"
+        style={{
+          "--accent-primary": accentPrimary,
+          "--accent-secondary": accentSecondary,
+          "--accent-primary-rgb": hexToRgb(accentPrimary),
+          "--accent-secondary-rgb": hexToRgb(accentSecondary),
+        } as React.CSSProperties}
+      >
+        <OfflinePage />
+      </div>
+    );
+  }
+
   return (
     <div 
       className="min-h-screen bg-[#0A0A0F] text-gray-200 relative overflow-hidden"
@@ -112,6 +145,8 @@ export default function App() {
     >
       <div className="grid-bg" />
       <div className="scanline" />
+
+      <InstallPrompt />
 
       <BrowserRouter>
         <Suspense fallback={<CyberLoading />}>
