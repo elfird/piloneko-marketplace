@@ -48,11 +48,11 @@ const allowedOrigins = process.env.APP_URL
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Izinkan request tanpa origin (misal: Postman, server-side) atau dari allowedOrigins
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Izinkan request tanpa origin (misal: Postman, server-side), dari allowedOrigins, atau dari vercel.app preview
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith("vercel.app")) {
         callback(null, true);
       } else {
-        callback(new Error("CORS: Origin tidak diizinkan"));
+        callback(new Error(`CORS: Origin ${origin} tidak diizinkan`));
       }
     },
     credentials: true,
@@ -129,5 +129,13 @@ if (IS_PRODUCTION && !process.env.VERCEL) {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
+
+// ==========================================
+// GLOBAL ERROR HANDLER
+// ==========================================
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error("Global Error:", err);
+  res.status(500).json({ error: err.message || "Internal Server Error" });
+});
 
 export default app;
