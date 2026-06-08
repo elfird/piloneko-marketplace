@@ -47,7 +47,7 @@ export const HowToBuy: React.FC<HowToBuyProps> = ({
       {/* Decorative center shield icon */}
       <div className="text-center mb-16">
         <h2 className="font-orbitron font-black text-3xl sm:text-4xl text-white tracking-widest text-neon relative inline-block mb-3 uppercase">
-          // SYSTEM PROTOCOL
+          // CARA ORDER
         </h2>
         <p className="text-xs sm:text-sm text-cyber-muted font-sans uppercase tracking-widest">
           Cara bertransaksi instan kilat 100% aman bergaransi resmi

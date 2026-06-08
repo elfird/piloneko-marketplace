@@ -49,7 +49,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       {/* Section Headline */}
       <div className="text-center mb-12">
         <h2 className="font-orbitron font-black text-3xl sm:text-4xl text-white tracking-widest text-neon relative inline-block mb-3 uppercase">
-          // CYBER CATALOG
+          // KATALOG PRODUK
         </h2>
         <p className="text-xs sm:text-sm text-cyber-muted font-sans uppercase tracking-widest">
           Temukan Akun Premium Resmi & Top Up Game Teraman Anda
