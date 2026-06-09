@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   ShoppingCart, Search, PhoneCall, Trash2, CheckCircle2, Send,
   Ban, Copy, Check, RefreshCw, Key, AlertTriangle, Eye, EyeOff,
-  MessageSquare, ClipboardCopy, Clock
+  MessageSquare, ClipboardCopy, Clock, Download
 } from "lucide-react";
 import { formatPrice } from "../../lib/utils";
 
@@ -164,6 +164,31 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ token }) => {
     CANCELED: "border-red-500/20 shadow-[inset_3px_0_0_#ef4444]",
   };
 
+  const handleExportCSV = () => {
+    if (!orders || orders.length === 0) {
+      alert("Tidak ada data order untuk diexport.");
+      return;
+    }
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "ID Pesanan,Tanggal,Nama Pembeli,WhatsApp,Produk,Paket,Harga,Status\n";
+    
+    orders.forEach((o) => {
+      const date = new Date(o.createdAt).toLocaleString('id-ID');
+      const buyer = o.buyerName ? o.buyerName.replace(/,/g, " ") : "";
+      const prodName = o.productName ? o.productName.replace(/,/g, " ") : "";
+      const pkgName = o.packageName ? o.packageName.replace(/,/g, " ") : "";
+      csvContent += `${o.refCode},${date},${buyer},${o.buyerWa},${prodName},${pkgName},${o.amount},${o.status}\n`;
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `laporan_transaksi_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6 text-left font-sans">
       {/* View Header */}
@@ -176,14 +201,22 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ token }) => {
             Kelola transaksi masuk, validasi konfirmasi BCA/QRIS, dan kirim kredensial premium via WA
           </p>
         </div>
-        <button
-          onClick={fetchOrders}
-          disabled={loading}
-          className="px-4 py-2 bg-cyber-card border border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-black transition-all text-xs font-mono font-bold cursor-pointer flex items-center gap-1.5 rounded-xs"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-          FORCE RETRIEVE
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="px-4 py-2 bg-cyber-card text-cyber-muted border border-cyber-muted/30 hover:bg-cyber-surface hover:text-white transition-all text-xs font-orbitron font-bold tracking-widest cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
+          >
+            <Download className="w-4 h-4 shrink-0" />
+            <span className="hidden sm:inline">EXPORT CSV</span>
+          </button>
+          <button
+            onClick={fetchOrders}
+            className="p-2 bg-accent-primary/10 text-accent-primary border border-accent-primary hover:bg-accent-primary hover:text-white transition-all rounded-xs cursor-pointer"
+            title="Refresh Data"
+          >
+            <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+          </button>
+        </div>
       </div>
 
       {/* Status Quick Filter Tabs */}

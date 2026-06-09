@@ -195,6 +195,30 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ token }) => {
     }
   };
 
+  const handleExportCSV = () => {
+    if (!products || products.length === 0) {
+      alert("Tidak ada data produk untuk diexport.");
+      return;
+    }
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "ID Produk,Nama Produk,Slug,Kategori ID,Nama Kategori,Jumlah Paket\n";
+    
+    products.forEach((p) => {
+      const name = p.name ? p.name.replace(/,/g, " ") : "";
+      const catName = p.category?.name ? p.category.name.replace(/,/g, " ") : "";
+      const pkgCount = p.packages ? p.packages.length : 0;
+      csvContent += `${p.id},${name},${p.slug},${p.categoryId},${catName},${pkgCount}\n`;
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `laporan_produk_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8 text-left font-sans">
       {/* View Header */}
@@ -208,13 +232,22 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ token }) => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddProductModal(true)}
-          className="px-4 py-2 bg-accent-primary/10 text-accent-primary border border-accent-primary hover:bg-accent-primary hover:text-white transition-all text-xs font-orbitron font-semibold cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
-        >
-          <Plus className="w-4 h-4 shrink-0" />
-          <span>TAMBAH PRODUK BARU</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="px-4 py-2 bg-cyber-card text-cyber-muted border border-cyber-muted/30 hover:bg-cyber-surface hover:text-white transition-all text-xs font-orbitron font-semibold cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
+          >
+            <Save className="w-4 h-4 shrink-0" />
+            <span>EXPORT CSV</span>
+          </button>
+          <button
+            onClick={() => setShowAddProductModal(true)}
+            className="px-4 py-2 bg-accent-primary/10 text-accent-primary border border-accent-primary hover:bg-accent-primary hover:text-white transition-all text-xs font-orbitron font-semibold cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
+          >
+            <Plus className="w-4 h-4 shrink-0" />
+            <span>TAMBAH PRODUK BARU</span>
+          </button>
+        </div>
       </div>
 
       {loading ? (

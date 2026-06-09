@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { 
   Folder, Plus, Edit2, Trash2, X, Search, ArrowUpDown, SlidersHorizontal, 
-  Tv, Gamepad, Key, FolderInput, GripVertical, AlertTriangle, CheckCircle2, ChevronRight, ChevronLeft
+  Tv, Gamepad, Key, FolderInput, GripVertical, AlertTriangle, CheckCircle2, ChevronRight, ChevronLeft, Download
 } from "lucide-react";
 import { Category } from "../../types";
 
@@ -373,6 +373,29 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({ token }) => {
     }
   };
 
+  const handleExportCSV = () => {
+    if (!categories || categories.length === 0) {
+      alert("Tidak ada data kategori untuk diexport.");
+      return;
+    }
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "ID Kategori,Nama Kategori,Slug,Tipe,Status,Jumlah Produk\n";
+    
+    categories.forEach((c) => {
+      const name = c.name ? c.name.replace(/,/g, " ") : "";
+      const prodCount = c._count?.products || 0;
+      csvContent += `${c.id},${name},${c.slug},${c.type},${c.isActive ? 'Aktif' : 'Non-aktif'},${prodCount}\n`;
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `laporan_kategori_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8 text-left font-sans select-none">
       
@@ -387,13 +410,22 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({ token }) => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-accent-primary/10 text-accent-primary border border-accent-primary hover:bg-accent-primary hover:text-white transition-all text-xs font-orbitron font-bold tracking-widest cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
-        >
-          <Plus className="w-4 h-4 shrink-0" />
-          <span>TAMBAH KATEGORI</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="px-4 py-2 bg-cyber-card text-cyber-muted border border-cyber-muted/30 hover:bg-cyber-surface hover:text-white transition-all text-xs font-orbitron font-bold tracking-widest cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
+          >
+            <Download className="w-4 h-4 shrink-0" />
+            <span>EXPORT CSV</span>
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2 bg-accent-primary/10 text-accent-primary border border-accent-primary hover:bg-accent-primary hover:text-white transition-all text-xs font-orbitron font-bold tracking-widest cursor-pointer flex items-center justify-center gap-1.5 rounded-xs"
+          >
+            <Plus className="w-4 h-4 shrink-0" />
+            <span>TAMBAH KATEGORI</span>
+          </button>
+        </div>
       </div>
 
       {/* 2. Cyber Table Filter Panel */}
