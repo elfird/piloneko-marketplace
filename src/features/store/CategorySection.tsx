@@ -31,6 +31,8 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     }
   };
 
+  const [visibleCount, setVisibleCount] = useState<number>(8);
+
   // Filter products based on active tab & query string
   const filteredProducts = products.filter((prod) => {
     const matchesCategory =
@@ -41,6 +43,19 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       prod.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  // Handle category or search change to reset pagination
+  const handleCategoryChange = (catId: any) => {
+    setSelectedCategory(catId);
+    setVisibleCount(8);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setVisibleCount(8);
+  };
+
+  const displayedProducts = filteredProducts.slice(0, visibleCount);
 
   return (
     <section id="catalog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 border-t border-accent-primary/10">
@@ -61,7 +76,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         {/* Dynamic Category Tabs Filters */}
         <div className="flex flex-wrap gap-2 w-full md:w-auto items-center overflow-x-auto pb-2 md:pb-0 scrollbar-none">
           <button
-            onClick={() => setSelectedCategory("ALL")}
+            onClick={() => handleCategoryChange("ALL")}
             className={`font-orbitron text-xs tracking-wider uppercase px-4 py-2 border select-none transition-all duration-200 cursor-pointer flex items-center gap-1.5 rounded-xs ${
               selectedCategory === "ALL"
                 ? "border-accent-primary text-accent-primary bg-accent-primary/10 shadow-[0_0_10px_rgba(0,245,255,0.2)]"
@@ -75,7 +90,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
+              onClick={() => handleCategoryChange(cat.id)}
               className={`font-orbitron text-xs tracking-wider uppercase px-4 py-2 border select-none transition-all duration-200 cursor-pointer flex items-center gap-1.5 rounded-xs ${
                 selectedCategory === cat.id
                   ? "border-accent-primary text-accent-primary bg-accent-primary/10 shadow-[0_0_10px_rgba(0,245,255,0.2)]"
@@ -95,7 +110,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
             type="text"
             placeholder="Cari akun atau game..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="w-full pl-10 pr-4 py-2 bg-cyber-card border border-accent-primary/20 hover:border-accent-primary/40 focus:border-accent-secondary focus:outline-none text-white text-sm font-sans placeholder-cyber-muted rounded-xs transition-colors duration-300 shadow-inner"
           />
           {/* Cyber tiny decorative corner dot */}
@@ -104,16 +119,33 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       </div>
 
       {/* Product list grid container */}
-      {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((prod) => (
-            <ProductCard
-              key={prod.id}
-              product={prod}
-              onSelect={onSelectProduct}
-            />
-          ))}
-        </div>
+      {displayedProducts.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayedProducts.map((prod) => (
+              <ProductCard
+                key={prod.id}
+                product={prod}
+                onSelect={onSelectProduct}
+              />
+            ))}
+          </div>
+          
+          {/* Load More Button */}
+          {visibleCount < filteredProducts.length && (
+            <div className="mt-12 text-center">
+              <button
+                onClick={() => setVisibleCount(prev => prev + 8)}
+                className="font-orbitron font-semibold text-xs tracking-widest uppercase px-6 py-3 border border-accent-primary/50 text-accent-primary hover:bg-accent-primary hover:text-black transition-all duration-300 cursor-pointer rounded-xs"
+              >
+                Muat Lebih Banyak
+              </button>
+              <p className="text-[10px] text-cyber-muted font-mono mt-3">
+                Menampilkan {displayedProducts.length} dari {filteredProducts.length} produk
+              </p>
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-24 border border-dashed border-accent-primary/20 bg-cyber-card/35 rounded-xs">
           <Layers className="w-12 h-12 text-cyber-muted mx-auto mb-4 animate-bounce" />

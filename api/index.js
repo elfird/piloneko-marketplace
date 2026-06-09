@@ -29,6 +29,51 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
+// server/models/Product.ts
+var Product_exports = {};
+__export(Product_exports, {
+  default: () => Product_default
+});
+var import_mongoose2, packageSchema, productSchema, Product, Product_default;
+var init_Product = __esm({
+  "server/models/Product.ts"() {
+    import_mongoose2 = __toESM(require("mongoose"));
+    packageSchema = new import_mongoose2.Schema({
+      label: { type: String, required: true },
+      price: { type: Number, required: true },
+      originalPrice: { type: Number },
+      durationDays: { type: Number, required: true },
+      warrantyDays: { type: Number, required: true },
+      maxDevices: { type: Number, default: 1 },
+      stockCount: { type: Number, default: 0 },
+      isActive: { type: Boolean, default: true },
+      digiflazzSkuCode: { type: String }
+    });
+    productSchema = new import_mongoose2.Schema(
+      {
+        categoryId: { type: import_mongoose2.Schema.Types.ObjectId, ref: "Category", required: true },
+        name: { type: String, required: true },
+        slug: { type: String, required: true, unique: true },
+        description: { type: String, required: true },
+        thumbnail: { type: String },
+        isActive: { type: Boolean, default: true },
+        isFeatured: { type: Boolean, default: false },
+        totalSold: { type: Number, default: 0 },
+        seoTitle: { type: String },
+        seoDescription: { type: String },
+        seoKeywords: { type: String },
+        seoOgImage: { type: String },
+        packages: [packageSchema]
+      },
+      { timestamps: true }
+    );
+    productSchema.index({ categoryId: 1 });
+    productSchema.index({ isActive: 1, isFeatured: -1 });
+    Product = import_mongoose2.default.models.Product || import_mongoose2.default.model("Product", productSchema);
+    Product_default = Product;
+  }
+});
+
 // server/models/Settings.ts
 var import_mongoose7, faqItemSchema, FaqItem, waTemplateSchema, WaTemplate, siteContentSchema, SiteContent;
 var init_Settings = __esm({
@@ -248,6 +293,114 @@ var init_whatsappService = __esm({
   }
 });
 
+// server/models/DigiflazzSetting.ts
+var import_mongoose16, digiflazzSettingSchema, DigiflazzSetting;
+var init_DigiflazzSetting = __esm({
+  "server/models/DigiflazzSetting.ts"() {
+    import_mongoose16 = __toESM(require("mongoose"));
+    digiflazzSettingSchema = new import_mongoose16.Schema(
+      {
+        username: { type: String, required: true },
+        apiKey: { type: String, required: true },
+        isProduction: { type: Boolean, default: false },
+        isActive: { type: Boolean, default: true },
+        connectionStatus: {
+          type: String,
+          enum: ["connected", "disconnected", "invalid_key", "untested"],
+          default: "untested"
+        },
+        lastConnectedAt: { type: Date }
+      },
+      { timestamps: true }
+    );
+    DigiflazzSetting = import_mongoose16.default.models.DigiflazzSetting || import_mongoose16.default.model("DigiflazzSetting", digiflazzSettingSchema);
+  }
+});
+
+// server/utils/encryption.ts
+var import_crypto_js2, ENCRYPTION_KEY3, encryptKey2, decryptKey2;
+var init_encryption = __esm({
+  "server/utils/encryption.ts"() {
+    import_crypto_js2 = __toESM(require("crypto-js"));
+    ENCRYPTION_KEY3 = process.env.ENCRYPTION_KEY || "piloneko-secure-key-32chars-!!!!";
+    encryptKey2 = (text) => {
+      return import_crypto_js2.default.AES.encrypt(text, ENCRYPTION_KEY3).toString();
+    };
+    decryptKey2 = (ciphertext) => {
+      const bytes = import_crypto_js2.default.AES.decrypt(ciphertext, ENCRYPTION_KEY3);
+      return bytes.toString(import_crypto_js2.default.enc.Utf8);
+    };
+  }
+});
+
+// server/services/digiflazzService.ts
+var digiflazzService_exports = {};
+__export(digiflazzService_exports, {
+  cekSaldo: () => cekSaldo,
+  getDigiflazzConfig: () => getDigiflazzConfig,
+  topUp: () => topUp
+});
+var import_crypto3, getDigiflazzConfig, cekSaldo, topUp;
+var init_digiflazzService = __esm({
+  "server/services/digiflazzService.ts"() {
+    import_crypto3 = __toESM(require("crypto"));
+    init_DigiflazzSetting();
+    init_encryption();
+    getDigiflazzConfig = async () => {
+      const setting = await DigiflazzSetting.findOne();
+      if (!setting || !setting.isActive || !setting.apiKey) {
+        throw new Error("Digiflazz belum dikonfigurasi atau sedang tidak aktif");
+      }
+      const decryptedKey = decryptKey2(setting.apiKey);
+      return {
+        username: setting.username,
+        apiKey: decryptedKey,
+        isProduction: setting.isProduction
+      };
+    };
+    cekSaldo = async () => {
+      const config = await getDigiflazzConfig();
+      const signString = config.username + config.apiKey + "depo";
+      const sign = import_crypto3.default.createHash("md5").update(signString).digest("hex");
+      const payload = {
+        cmd: "deposit",
+        username: config.username,
+        sign
+      };
+      const response = await fetch("https://api.digiflazz.com/v1/cek-saldo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok || data.data?.rc !== "00") {
+        throw new Error(data.data?.message || "Gagal mengecek saldo Digiflazz");
+      }
+      return data.data;
+    };
+    topUp = async (skuCode, customerNo, refId) => {
+      const config = await getDigiflazzConfig();
+      const signString = config.username + config.apiKey + refId;
+      const sign = import_crypto3.default.createHash("md5").update(signString).digest("hex");
+      const payload = {
+        username: config.username,
+        buyer_sku_code: skuCode,
+        customer_no: customerNo,
+        ref_id: refId,
+        sign,
+        testing: !config.isProduction
+      };
+      const response = await fetch("https://api.digiflazz.com/v1/transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      return data.data;
+    };
+  }
+});
+
 // server/api.ts
 var api_exports = {};
 __export(api_exports, {
@@ -257,7 +410,7 @@ module.exports = __toCommonJS(api_exports);
 
 // server/app.ts
 var import_config = require("dotenv/config");
-var import_express13 = __toESM(require("express"));
+var import_express14 = __toESM(require("express"));
 var import_path = __toESM(require("path"));
 var import_cookie_parser = __toESM(require("cookie-parser"));
 var import_helmet = __toESM(require("helmet"));
@@ -288,41 +441,7 @@ var db_default = connectDB;
 
 // server/routes/productRoutes.ts
 var import_express = __toESM(require("express"));
-
-// server/models/Product.ts
-var import_mongoose2 = __toESM(require("mongoose"));
-var packageSchema = new import_mongoose2.Schema({
-  label: { type: String, required: true },
-  price: { type: Number, required: true },
-  originalPrice: { type: Number },
-  durationDays: { type: Number, required: true },
-  warrantyDays: { type: Number, required: true },
-  maxDevices: { type: Number, default: 1 },
-  stockCount: { type: Number, default: 0 },
-  isActive: { type: Boolean, default: true }
-});
-var productSchema = new import_mongoose2.Schema(
-  {
-    categoryId: { type: import_mongoose2.Schema.Types.ObjectId, ref: "Category", required: true },
-    name: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
-    description: { type: String, required: true },
-    thumbnail: { type: String },
-    isActive: { type: Boolean, default: true },
-    isFeatured: { type: Boolean, default: false },
-    totalSold: { type: Number, default: 0 },
-    seoTitle: { type: String },
-    seoDescription: { type: String },
-    seoKeywords: { type: String },
-    seoOgImage: { type: String },
-    packages: [packageSchema]
-  },
-  { timestamps: true }
-);
-productSchema.index({ categoryId: 1 });
-productSchema.index({ isActive: 1, isFeatured: -1 });
-var Product = import_mongoose2.default.models.Product || import_mongoose2.default.model("Product", productSchema);
-var Product_default = Product;
+init_Product();
 
 // server/models/Category.ts
 var import_mongoose3 = __toESM(require("mongoose"));
@@ -436,6 +555,7 @@ var Order = import_mongoose4.default.models.Order || import_mongoose4.default.mo
 var Order_default = Order;
 
 // server/routes/orderRoutes.ts
+init_Product();
 var router2 = import_express2.default.Router();
 router2.post("/create", async (req, res) => {
   try {
@@ -626,6 +746,7 @@ var Testimonial = import_mongoose8.default.models.Testimonial || import_mongoose
 
 // server/routes/adminRoutes.ts
 var import_crypto = __toESM(require("crypto"));
+init_Product();
 
 // server/models/AccountStock.ts
 var import_mongoose9 = __toESM(require("mongoose"));
@@ -1374,6 +1495,7 @@ var adminRoutes_default = router3;
 
 // server/routes/categoryRoutes.ts
 var import_express4 = __toESM(require("express"));
+init_Product();
 var router4 = import_express4.default.Router();
 router4.get("/", async (req, res) => {
   try {
@@ -1398,6 +1520,7 @@ var categoryRoutes_default = router4;
 // server/routes/publicRoutes.ts
 var import_express5 = __toESM(require("express"));
 init_Settings();
+init_Product();
 var router5 = import_express5.default.Router();
 router5.get("/site-content", async (req, res) => {
   try {
@@ -1535,7 +1658,8 @@ var paymentSchema = new import_mongoose11.Schema(
 var Payment = import_mongoose11.default.models.Payment || import_mongoose11.default.model("Payment", paymentSchema);
 
 // server/routes/paymentRoutes.ts
-var import_crypto3 = __toESM(require("crypto"));
+init_Product();
+var import_crypto4 = __toESM(require("crypto"));
 
 // server/models/WebhookLog.ts
 var import_mongoose12 = __toESM(require("mongoose"));
@@ -1843,6 +1967,37 @@ var processMidtransStatus = async (orderId, transactionStatus, fraudStatus) => {
       type: "ORDER",
       isRead: false
     });
+    let isAutoTopup = false;
+    let topupSuccess = false;
+    try {
+      const Product2 = (await Promise.resolve().then(() => (init_Product(), Product_exports))).default;
+      const product = await Product2.findById(order.productId);
+      if (product) {
+        const pkg = product.packages.find((p) => p._id.toString() === order.packageId.toString());
+        if (pkg && pkg.digiflazzSkuCode) {
+          isAutoTopup = true;
+          let targetId = order.gameUserId || order.buyerWa;
+          if (order.gameUserId && order.gameServerId) {
+            targetId = order.gameUserId + order.gameServerId;
+          }
+          const { topUp: topUp2 } = await Promise.resolve().then(() => (init_digiflazzService(), digiflazzService_exports));
+          const topupRes = await topUp2(pkg.digiflazzSkuCode, targetId, orderId);
+          if (topupRes && (topupRes.status === "Sukses" || topupRes.status === "Pending")) {
+            topupSuccess = true;
+            order.status = topupRes.status === "Sukses" ? "SENT" : "CONFIRMED";
+            order.adminNote = `Top-up otomatis Digiflazz ${topupRes.status}: SN ${topupRes.sn || "-"}`;
+            await order.save();
+          } else {
+            order.adminNote = `Top-up otomatis Digiflazz Gagal: ${topupRes?.message || "Unknown Error"}`;
+            await order.save();
+          }
+        }
+      }
+    } catch (digiErr) {
+      console.error("[DIGIFLAZZ] Topup Error:", digiErr.message);
+      order.adminNote = `Top-up otomatis Digiflazz Error: ${digiErr.message}`;
+      await order.save();
+    }
     try {
       const { getWhatsAppSettings: getWhatsAppSettings2, sendWhatsAppMessage: sendWhatsAppMessage2 } = await Promise.resolve().then(() => (init_whatsappService(), whatsappService_exports));
       const waSettings = await getWhatsAppSettings2();
@@ -1876,6 +2031,17 @@ _Notifikasi otomatis dari sistem PILONEKO_`;
         }
         const buyerPhone = order.buyerWa;
         if (buyerPhone) {
+          let statusText = "Sedang Diproses Admin \u{1F504}";
+          let closingText = "Admin kami akan segera mengirimkan akun Anda melalui WhatsApp ini.\nMohon tunggu sebentar ya! \u{1F60A}";
+          if (isAutoTopup) {
+            if (topupSuccess) {
+              statusText = order.status === "SENT" ? "Top Up Berhasil Masuk \u2705" : "Top Up Sedang Diproses Sistem \u{1F504}";
+              closingText = "Pesanan Top Up Anda sedang diproses otomatis oleh sistem kami.\nSilakan cek ke dalam game Anda beberapa saat lagi! \u{1F3AE}";
+            } else {
+              statusText = "Butuh Bantuan Admin \u26A0\uFE0F";
+              closingText = "Sistem gagal mengirim pesanan secara otomatis.\nJangan khawatir, admin kami akan segera mengecek dan memprosesnya secara manual! \u{1F64F}";
+            }
+          }
           const buyerMessage = `\u2705 *Pembayaran Berhasil - PILONEKO*
 
 Halo ${order.buyerName},
@@ -1886,10 +2052,9 @@ Pembayaran Anda telah dikonfirmasi!
 \u{1F4E6} *Produk:* ${order.productName}
 \u{1F381} *Paket:* ${order.packageName}
 \u{1F4B0} *Total:* Rp ${order.price.toLocaleString("id-ID")}
-\u{1F4CA} *Status:* Sedang Diproses Admin \u{1F504}
+\u{1F4CA} *Status:* ${statusText}
 
-Admin kami akan segera mengirimkan akun Anda melalui WhatsApp ini.
-Mohon tunggu sebentar ya! \u{1F60A}
+${closingText}
 
 Terima kasih telah berbelanja di PILONEKO! \u{1F64F}`;
           await sendWhatsAppMessage2(buyerPhone, buyerMessage);
@@ -2093,7 +2258,7 @@ router7.post("/notification", async (req, res) => {
   try {
     const config = await getMidtransConfig();
     const serverKey = config.serverKey;
-    const hash = import_crypto3.default.createHash("sha512").update(`${order_id}${status_code}${gross_amount}${serverKey}`).digest("hex");
+    const hash = import_crypto4.default.createHash("sha512").update(`${order_id}${status_code}${gross_amount}${serverKey}`).digest("hex");
     signatureValid = hash === signature_key;
   } catch {
   }
@@ -2205,6 +2370,7 @@ var paymentRoutes_default = router7;
 
 // server/routes/stockRoutes.ts
 var import_express8 = __toESM(require("express"));
+init_Product();
 var router8 = import_express8.default.Router();
 router8.get("/", authenticateAdmin, async (req, res) => {
   try {
@@ -2645,8 +2811,100 @@ router12.delete("/:filename", authenticateAdmin, async (req, res) => {
 });
 var uploadRoutes_default = router12;
 
+// server/routes/digiflazzRoutes.ts
+var import_express13 = __toESM(require("express"));
+
+// server/controllers/digiflazzController.ts
+init_DigiflazzSetting();
+init_encryption();
+init_digiflazzService();
+var getSettings = async (req, res) => {
+  try {
+    const settings = await DigiflazzSetting.findOne();
+    if (!settings) {
+      return res.json({
+        username: "",
+        apiKey: "",
+        // don't send actual key, just placeholder or empty
+        isProduction: false,
+        isActive: false,
+        connectionStatus: "untested"
+      });
+    }
+    res.json({
+      username: settings.username,
+      apiKey: settings.apiKey ? "********" : "",
+      // mask the API key
+      isProduction: settings.isProduction,
+      isActive: settings.isActive,
+      connectionStatus: settings.connectionStatus,
+      lastConnectedAt: settings.lastConnectedAt
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var saveSettings = async (req, res) => {
+  try {
+    const { username, apiKey, isProduction, isActive } = req.body;
+    let settings = await DigiflazzSetting.findOne();
+    let encryptedKey = settings?.apiKey || "";
+    if (apiKey && apiKey !== "********") {
+      encryptedKey = encryptKey2(apiKey);
+    }
+    if (!settings) {
+      settings = new DigiflazzSetting({
+        username,
+        apiKey: encryptedKey,
+        isProduction,
+        isActive,
+        connectionStatus: "untested"
+      });
+    } else {
+      settings.username = username;
+      settings.apiKey = encryptedKey;
+      settings.isProduction = isProduction;
+      settings.isActive = isActive;
+    }
+    await settings.save();
+    res.json({ message: "Pengaturan Digiflazz berhasil disimpan" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+var testConnectionAndGetBalance = async (req, res) => {
+  try {
+    const balanceData = await cekSaldo();
+    let settings = await DigiflazzSetting.findOne();
+    if (settings) {
+      settings.connectionStatus = "connected";
+      settings.lastConnectedAt = /* @__PURE__ */ new Date();
+      await settings.save();
+    }
+    res.json({
+      success: true,
+      balance: balanceData.deposit
+    });
+  } catch (error) {
+    let settings = await DigiflazzSetting.findOne();
+    if (settings) {
+      settings.connectionStatus = "invalid_key";
+      await settings.save();
+    }
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// server/routes/digiflazzRoutes.ts
+var router13 = import_express13.default.Router();
+router13.use(authenticateAdmin);
+router13.get("/settings", getSettings);
+router13.post("/settings", saveSettings);
+router13.get("/balance", testConnectionAndGetBalance);
+var digiflazzRoutes_default = router13;
+
 // server/app.ts
-var app = (0, import_express13.default)();
+var app = (0, import_express14.default)();
 var IS_PRODUCTION = process.env.NODE_ENV === "production";
 app.use(
   (0, import_helmet.default)({
@@ -2678,8 +2936,8 @@ app.use(
     credentials: true
   })
 );
-app.use(import_express13.default.json({ limit: "10mb" }));
-app.use(import_express13.default.urlencoded({ extended: true, limit: "10mb" }));
+app.use(import_express14.default.json({ limit: "10mb" }));
+app.use(import_express14.default.urlencoded({ extended: true, limit: "10mb" }));
 app.use((0, import_cookie_parser.default)());
 db_default().catch((err) => console.error("Initial DB connection failed:", err.message));
 app.use("/api/products", productRoutes_default);
@@ -2692,6 +2950,7 @@ app.use("/api/admin/webhook-logs", webhookLogRoutes_default);
 app.use("/api/admin/whatsapp", whatsappRoutes_default);
 app.use("/api/admin/customers", customerRoutes_default);
 app.use("/api/admin/upload", uploadRoutes_default);
+app.use("/api/admin/digiflazz", digiflazzRoutes_default);
 app.use("/api/admin", adminRoutes_default);
 app.use("/api", publicRoutes_default);
 app.get("/api/health", (_req, res) => {
@@ -2705,8 +2964,8 @@ app.get("/api/health", (_req, res) => {
 if (IS_PRODUCTION && !process.env.VERCEL) {
   const distPath = import_path.default.join(process.cwd(), "dist");
   const publicPath = import_path.default.join(process.cwd(), "public");
-  app.use(import_express13.default.static(publicPath));
-  app.use(import_express13.default.static(distPath));
+  app.use(import_express14.default.static(publicPath));
+  app.use(import_express14.default.static(distPath));
   app.get("*", (_req, res) => {
     res.sendFile(import_path.default.join(distPath, "index.html"));
   });
