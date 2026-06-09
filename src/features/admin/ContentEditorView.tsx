@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sliders, Save, FileText, Image, LayoutGrid, Heart, Phone } from "lucide-react";
+import { Sliders, Save, FileText, Image, LayoutGrid, Heart, Phone, Shield } from "lucide-react";
 
 interface ContentEditorProps {
   token: string;
