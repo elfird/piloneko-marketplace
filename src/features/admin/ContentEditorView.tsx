@@ -87,6 +87,7 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
     { id: "payments", label: "BCA & QRIS", icon: <Image className="w-4 h-4" /> },
     { id: "steps", label: "Diagram Beli", icon: <LayoutGrid className="w-4 h-4" /> },
     { id: "stats", label: "Stats Counter", icon: <Heart className="w-4 h-4" /> },
+    { id: "forms", label: "Form Layanan", icon: <FileText className="w-4 h-4" /> },
   ];
 
   return (
@@ -496,6 +497,68 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
             </div>
           </div>
         )}
+
+        {/* TAB 6: FORMS (GARANSI & BANTUAN) */}
+        {activeTab === "forms" && (
+          <div className="space-y-4">
+            <span className="block text-[10px] font-orbitron font-bold text-accent-primary uppercase tracking-widest leading-none mb-3">
+              // PENGATURAN TEKS HALAMAN GARANSI & BANTUAN
+            </span>
+
+            <div className="border-b border-cyber-muted/10 pb-4">
+              <span className="block text-[10px] font-orbitron font-bold text-accent-secondary uppercase mb-2">Form Klaim Garansi</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-cyber-muted text-[10px] font-mono uppercase mb-1.5">Judul Halaman Garansi</label>
+                  <input
+                    type="text"
+                    value={formData.warranty_title || ""}
+                    onChange={(e) => handleFieldChange("warranty_title", e.target.value)}
+                    placeholder="Contoh: PORTAL GARANSI //"
+                    className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-cyber-muted text-[10px] font-mono uppercase mb-1.5">Sub-judul / Deskripsi Garansi</label>
+                  <input
+                    type="text"
+                    value={formData.warranty_desc || ""}
+                    onChange={(e) => handleFieldChange("warranty_desc", e.target.value)}
+                    placeholder="Ajukan klaim perbaikan / ganti akun premium"
+                    className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <span className="block text-[10px] font-orbitron font-bold text-[#00F5FF] uppercase mb-2">Form Tiket Bantuan</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-cyber-muted text-[10px] font-mono uppercase mb-1.5">Judul Halaman Bantuan</label>
+                  <input
+                    type="text"
+                    value={formData.support_title || ""}
+                    onChange={(e) => handleFieldChange("support_title", e.target.value)}
+                    placeholder="Contoh: BANTUAN PELANGGAN //"
+                    className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-cyber-muted text-[10px] font-mono uppercase mb-1.5">Sub-judul / Deskripsi Bantuan</label>
+                  <input
+                    type="text"
+                    value={formData.support_desc || ""}
+                    onChange={(e) => handleFieldChange("support_desc", e.target.value)}
+                    placeholder="Kirim keluhan bantuan teknis / pertanyaan umum"
+                    className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
 
         {/* Global Save Button */}
         <div className="pt-4 border-t border-cyber-muted/15 text-right">

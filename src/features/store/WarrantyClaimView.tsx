@@ -6,9 +6,11 @@ import { CyberButton } from "../../components/ui/CyberButton";
 interface WarrantyClaimViewProps {
   onBack: () => void;
   storeName: string;
+  customTitle?: string;
+  customDesc?: string;
 }
 
-export const WarrantyClaimView: React.FC<WarrantyClaimViewProps> = ({ onBack, storeName }) => {
+export const WarrantyClaimView: React.FC<WarrantyClaimViewProps> = ({ onBack, storeName, customTitle, customDesc }) => {
   const [refCode, setRefCode] = useState("");
   const [buyerName, setBuyerName] = useState("");
   const [buyerWa, setBuyerWa] = useState("");
@@ -104,10 +106,10 @@ export const WarrantyClaimView: React.FC<WarrantyClaimViewProps> = ({ onBack, st
               </span>
               <div>
                 <h2 className="font-orbitron font-black text-lg text-white tracking-wider uppercase">
-                  PORTAL GARANSI //
+                  {customTitle || "PORTAL GARANSI //"}
                 </h2>
                 <p className="text-[9px] text-cyber-muted font-mono tracking-widest uppercase">
-                  Ajukan klaim perbaikan / ganti akun premium
+                  {customDesc || "Ajukan klaim perbaikan / ganti akun premium"}
                 </p>
               </div>
             </div>

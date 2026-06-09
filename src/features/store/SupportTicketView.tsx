@@ -6,9 +6,11 @@ import { CyberButton } from "../../components/ui/CyberButton";
 interface SupportTicketViewProps {
   onBack: () => void;
   storeName: string;
+  customTitle?: string;
+  customDesc?: string;
 }
 
-export const SupportTicketView: React.FC<SupportTicketViewProps> = ({ onBack, storeName }) => {
+export const SupportTicketView: React.FC<SupportTicketViewProps> = ({ onBack, storeName, customTitle, customDesc }) => {
   const [buyerName, setBuyerName] = useState("");
   const [buyerWa, setBuyerWa] = useState("");
   const [subject, setSubject] = useState("");
@@ -104,10 +106,10 @@ export const SupportTicketView: React.FC<SupportTicketViewProps> = ({ onBack, st
               </span>
               <div>
                 <h2 className="font-orbitron font-black text-lg text-white tracking-wider uppercase">
-                  BANTUAN PELANGGAN //
+                  {customTitle || "BANTUAN PELANGGAN //"}
                 </h2>
                 <p className="text-[9px] text-cyber-muted font-mono tracking-widest uppercase">
-                  Kirim keluhan bantuan teknis / pertanyaan umum
+                  {customDesc || "Kirim keluhan bantuan teknis / pertanyaan umum"}
                 </p>
               </div>
             </div>

@@ -9,6 +9,8 @@ import { OfflinePage } from './components/pwa/OfflinePage';
 const LandingPage = React.lazy(() => import('./pages/customer/LandingPage'));
 const ProductDetailPage = React.lazy(() => import('./pages/customer/ProductDetailPage'));
 const InvoicePage = React.lazy(() => import('./pages/customer/InvoicePage'));
+const WarrantyPage = React.lazy(() => import('./pages/customer/WarrantyPage'));
+const SupportPage = React.lazy(() => import('./pages/customer/SupportPage'));
 
 // Lazy loading Admin pages
 const AdminLayout = React.lazy(() => import('./pages/admin/AdminLayout'));
@@ -155,6 +157,8 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/product/:slug" element={<ProductDetailPage />} />
             <Route path="/invoice/:invoiceId" element={<InvoicePage />} />
+            <Route path="/warranty-claim" element={<WarrantyPage />} />
+            <Route path="/support-ticket" element={<SupportPage />} />
             
             {/* Admin Routes (menggunakan Layout dan Routing internal) */}
             <Route path="/admin/login" element={<AdminLogin />} />
