@@ -61,6 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: "wa", label: "Template WA", icon: <MessageSquare className="w-4 h-4" /> },
     { id: "cms", label: "CMS Konten", icon: <Sliders className="w-4 h-4" /> },
     { id: "theme", label: "Theme Customizer", icon: <Sparkles className="w-4 h-4" /> },
+    { id: "faq", label: "Kelola FAQ", icon: <HelpCircle className="w-4 h-4" /> },
     { id: "testimonials", label: "Testimoni", icon: <Star className="w-4 h-4" /> },
     { id: "settings", label: "Profil Admin", icon: <Settings className="w-4 h-4" /> },
   ];
