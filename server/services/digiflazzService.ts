@@ -49,9 +49,17 @@ export class DigiflazzService {
     const response = await fetch(`${DIGIFLAZZ_BASE_URL}/price-list`, getFetchOptions(payload));
     
     const data = await response.json();
+    
+    // Digiflazz often returns 200 OK but with data containing an error object (like IP not whitelisted)
     if (!response.ok || !data.data) {
-      throw new Error(data.message || data.data || "Failed to fetch price list from Digiflazz");
+      throw new Error(data.message || "Failed to fetch price list from Digiflazz");
     }
+    
+    if (!Array.isArray(data.data)) {
+      // It's an error object, e.g. { message: 'IP Address not allowed', rc: '...' }
+      throw new Error(data.data.message || JSON.stringify(data.data));
+    }
+
     return data.data; // Array of products
   }
 

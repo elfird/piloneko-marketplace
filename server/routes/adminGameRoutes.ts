@@ -113,6 +113,7 @@ router.put("/digiflazz/settings", async (req, res) => {
 router.post("/digiflazz/sync", async (req, res) => {
   try {
     const products = await DigiflazzService.getPrepaidProducts();
+    console.log(`[Digiflazz Sync] Total products pulled from API: ${products.length}`);
     
     // products is array of { buyer_sku_code, product_name, category, brand, type, seller_name, price, buyer_product_status, seller_product_status, unlimited_stock, stock, multi, start_cut_off, end_cut_off, desc }
     
@@ -152,6 +153,7 @@ router.post("/digiflazz/sync", async (req, res) => {
       }
     }
     
+    console.log(`[Digiflazz Sync] Matched and synced products: ${syncedCount}`);
     res.json({ message: "Sync successful", syncedCount });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
