@@ -72,6 +72,11 @@ export const Footer: React.FC<FooterProps> = ({
                 </a>
               </li>
               <li>
+                <button onClick={() => onNavigate("terms")} className="hover:text-accent-primary hover:underline transition-colors block text-left">
+                  &gt; SYARAT & KETENTUAN
+                </button>
+              </li>
+              <li>
                 <a href="#howto" className="hover:text-accent-primary hover:underline transition-colors block">
                   &gt; DIAGRAM CARA BELI
                 </a>

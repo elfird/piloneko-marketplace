@@ -88,6 +88,7 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
     { id: "steps", label: "Diagram Beli", icon: <LayoutGrid className="w-4 h-4" /> },
     { id: "stats", label: "Stats Counter", icon: <Heart className="w-4 h-4" /> },
     { id: "forms", label: "Form Layanan", icon: <FileText className="w-4 h-4" /> },
+    { id: "legal", label: "Legal S&K", icon: <Shield className="w-4 h-4" /> },
   ];
 
   return (
@@ -559,6 +560,28 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
           </div>
         )}
 
+        {/* TAB 7: LEGAL S&K */}
+        {activeTab === "legal" && (
+          <div className="space-y-4">
+            <span className="block text-[10px] font-orbitron font-bold text-accent-primary uppercase tracking-widest leading-none mb-3">
+              // SYARAT DAN KETENTUAN TOKO
+            </span>
+            <p className="text-[11px] text-cyber-muted font-sans mb-4">
+              Isi teks panjang untuk halaman Syarat & Ketentuan. Anda bisa menggunakan enter/baris baru untuk memisahkan paragraf.
+            </p>
+
+            <div>
+              <label className="block text-cyber-muted text-[10px] font-mono uppercase mb-1.5">Teks Lengkap S&K</label>
+              <textarea
+                rows={15}
+                value={formData.terms_content || ""}
+                onChange={(e) => handleFieldChange("terms_content", e.target.value)}
+                placeholder="1. Pembelian akun tidak dapat di-refund...\n2. Garansi berlaku selama..."
+                className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white font-sans"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Global Save Button */}
         <div className="pt-4 border-t border-cyber-muted/15 text-right">
