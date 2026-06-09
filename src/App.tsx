@@ -9,6 +9,7 @@ import { OfflinePage } from './components/pwa/OfflinePage';
 const LandingPage = React.lazy(() => import('./pages/customer/LandingPage'));
 const ProductDetailPage = React.lazy(() => import('./pages/customer/ProductDetailPage'));
 const InvoicePage = React.lazy(() => import('./pages/customer/InvoicePage'));
+const GameTopupCheckout = React.lazy(() => import('./pages/customer/GameTopupCheckout'));
 const WarrantyPage = React.lazy(() => import('./pages/customer/WarrantyPage'));
 const SupportPage = React.lazy(() => import('./pages/customer/SupportPage'));
 const TermsPage = React.lazy(() => import('./pages/customer/TermsPage'));
@@ -157,6 +158,7 @@ export default function App() {
             {/* Customer Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/product/:slug" element={<ProductDetailPage />} />
+            <Route path="/topup/:slug" element={<GameTopupCheckout />} />
             <Route path="/invoice/:invoiceId" element={<InvoicePage />} />
             <Route path="/warranty-claim" element={<WarrantyPage />} />
             <Route path="/support-ticket" element={<SupportPage />} />

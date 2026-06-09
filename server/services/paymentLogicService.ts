@@ -1,9 +1,17 @@
 import { Payment } from '../models/Payment';
 import Order from '../models/Order';
+import TopupOrder from '../models/TopupOrder';
 import { Notification } from '../models/AdminAndOthers';
 import { accumulateCustomerSpent } from './customerService';
+import { DigiflazzService } from './digiflazzService';
 
 export const processMidtransStatus = async (orderId: string, transactionStatus: string, fraudStatus?: string) => {
+  const isTopup = orderId.startsWith('TP-');
+  
+  if (isTopup) {
+    return processTopupMidtransStatus(orderId, transactionStatus, fraudStatus);
+  }
+
   const payment = await Payment.findOne({ orderId });
   const order = await Order.findOne({ refCode: orderId });
 
@@ -136,4 +144,80 @@ Terima kasih telah berbelanja di PILONEKO! 🙏`;
 
   await order.save();
   return { payment, order };
+};
+
+export const processTopupMidtransStatus = async (orderId: string, transactionStatus: string, fraudStatus?: string) => {
+  const payment = await Payment.findOne({ orderId });
+  const topupOrder = await TopupOrder.findOne({ invoice: orderId }).populate("productId");
+
+  if (!payment || !topupOrder) return null;
+
+  if (['success', 'settlement', 'capture'].includes(payment.transactionStatus || '')) {
+    return { payment, order: topupOrder };
+  }
+
+  let newStatus = transactionStatus;
+  if (transactionStatus === 'capture') {
+    newStatus = fraudStatus === 'accept' ? 'success' : 'challenge';
+  } else if (transactionStatus === 'settlement') {
+    newStatus = 'settlement';
+  } else if (['cancel', 'deny', 'expire'].includes(transactionStatus)) {
+    newStatus = 'failed';
+  }
+
+  payment.transactionStatus = transactionStatus as any;
+  await payment.save();
+
+  if (newStatus === 'success' || newStatus === 'settlement') {
+    topupOrder.status = 'PAID';
+    await topupOrder.save();
+
+    // Trigger Digiflazz Topup
+    try {
+      // Find game product to get buyer_sku_code
+      const product = topupOrder.productId as any;
+      if (!product || !product.buyerSkuCode) {
+        throw new Error("Product SKU code not found");
+      }
+
+      // Convert dynamic accountData to customerNo string depending on game
+      // Most games use User ID + Zone ID or just User ID
+      let customerNo = "";
+      if (topupOrder.accountData) {
+        const values = Object.values(topupOrder.accountData);
+        customerNo = values.join(""); // e.g. "12345678901234"
+      }
+      
+      topupOrder.status = 'PROCESSING';
+      await topupOrder.save();
+
+      const digiRes = await DigiflazzService.createTransaction(product.buyerSkuCode, customerNo, orderId);
+      topupOrder.digiflazzResponse = digiRes;
+      
+      if (digiRes.status === "Sukses") {
+        topupOrder.status = 'SUCCESS';
+      } else if (digiRes.status === "Gagal") {
+        topupOrder.status = 'FAILED';
+      }
+      await topupOrder.save();
+
+    } catch (err: any) {
+      topupOrder.status = 'FAILED';
+      topupOrder.digiflazzResponse = { error: err.message };
+      await topupOrder.save();
+    }
+
+    await Notification.create({
+      title: `💰 Topup Lunas: ${orderId}`,
+      message: `Topup ${orderId} dari ${topupOrder.customerName}. Status Digiflazz: ${topupOrder.status}`,
+      type: 'ORDER',
+      isRead: false,
+    });
+
+  } else if (newStatus === 'failed') {
+    topupOrder.status = 'FAILED';
+    await topupOrder.save();
+  }
+
+  return { payment, order: topupOrder };
 };

@@ -11,6 +11,7 @@ import { Testimonials } from '../../features/store/Testimonials';
 import { FaqSection } from '../../features/store/FaqSection';
 import { Footer } from '../../features/store/Footer';
 import { FloatingWA } from '../../features/store/FloatingWA';
+import { GameTopupSection } from '../../features/store/GameTopupSection';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ export default function LandingPage() {
         items={flashSaleItems}
         onSelectProduct={(prod) => navigate(`/product/${prod.slug}`)}
       />
+      <GameTopupSection />
       <CategorySection
         categories={categories}
         products={products}

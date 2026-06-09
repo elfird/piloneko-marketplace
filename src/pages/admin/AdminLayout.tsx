@@ -16,6 +16,14 @@ import { TestimonialsManagerView } from '../../features/admin/TestimonialsManage
 import { FaqAndReviewsView } from '../../features/admin/FaqAndReviewsView';
 import { AdminSettingsView } from '../../features/admin/AdminSettingsView';
 import { CategoriesView } from '../../features/admin/CategoriesView';
+
+// Game Topup Views
+import { TopupDashboardView } from "../../features/admin/topup/TopupDashboardView";
+import { ManageGamesView } from "../../features/admin/topup/ManageGamesView";
+import { GameProductsView } from "../../features/admin/topup/GameProductsView";
+import { DigiflazzSyncView } from "../../features/admin/topup/DigiflazzSyncView";
+import { TopupOrdersView } from "../../features/admin/topup/TopupOrdersView";
+
 import { AnalyticsView } from '../../features/admin/AnalyticsView';
 import { VouchersView } from '../../features/admin/VouchersView';
 import { WarrantyView } from '../../features/admin/WarrantyView';
@@ -185,6 +193,13 @@ export default function AdminLayout() {
           <Route path="faq" element={<FaqAndReviewsView token={activeToken} />} />
           <Route path="settings" element={<AdminSettingsView token={activeToken} />} />
           <Route path="customers" element={<CustomersView token={activeToken} />} />
+          
+          {/* Game Topup Sub-Routes */}
+          <Route path="topup_dashboard" element={<TopupDashboardView token={activeToken} />} />
+          <Route path="manage_games" element={<ManageGamesView token={activeToken} />} />
+          <Route path="game_products" element={<GameProductsView token={activeToken} />} />
+          <Route path="digiflazz_sync" element={<DigiflazzSyncView token={activeToken} />} />
+          <Route path="topup_orders" element={<TopupOrdersView token={activeToken} />} />
           
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Routes>

@@ -82,6 +82,9 @@ import webhookLogRoutes from "./routes/webhookLogRoutes";
 import whatsappRoutes from "./routes/whatsappRoutes";
 import customerRoutes from "./routes/customerRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
+import adminGameRoutes from "./routes/adminGameRoutes";
+import gameRoutes from "./routes/gameRoutes";
+import topupOrderRoutes from "./routes/topupOrderRoutes";
 
 // ==========================================
 // PUBLIC API ENDPOINTS
@@ -90,6 +93,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/topup-games", gameRoutes);
+app.use("/api/topup-orders", topupOrderRoutes);
 
 // ==========================================
 // ADMIN API ENDPOINTS (PROTECTED)
@@ -99,6 +104,7 @@ app.use("/api/admin/payment-settings", paymentSettingsRoutes);
 app.use("/api/admin/webhook-logs", webhookLogRoutes);
 app.use("/api/admin/whatsapp", whatsappRoutes);
 app.use("/api/admin/customers", customerRoutes);
+app.use("/api/admin/topup", adminGameRoutes);
 app.use("/api/admin/upload", uploadRoutes);
 app.use("/api/admin", adminRoutes);
 
