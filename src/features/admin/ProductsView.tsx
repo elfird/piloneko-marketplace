@@ -264,7 +264,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ token }) => {
                 <img src={prod.thumbnail} alt={prod.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-cyber-card to-transparent" />
                 <span className="absolute top-2.5 left-2.5 bg-accent-secondary/20 text-accent-secondary border border-accent-secondary/50 text-[10px] font-mono px-2 py-0.5 uppercase tracking-widest rounded-sm">
-                  {prod.category?.name || "Kategori"}
+                  {prod.categoryId?.name || prod.category?.name || "Kategori"}
                 </span>
               </div>
 
@@ -463,7 +463,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ token }) => {
               <div>
                 <label className="block text-cyber-muted mb-1 font-mono uppercase text-[9px]">Pilihan Kategori</label>
                 <select
-                  value={editingProduct.categoryId}
+                  value={typeof editingProduct.categoryId === 'object' ? (editingProduct.categoryId as any)._id : editingProduct.categoryId}
                   onChange={(e) => setEditingProduct({ ...editingProduct, categoryId: e.target.value })}
                   className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 focus:border-accent-primary focus:outline-none text-white text-xs"
                 >
