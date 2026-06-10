@@ -32,7 +32,7 @@ router.get('/', cacheMiddleware(300), async (req, res) => {
     // Use .lean() for faster JSON serialization since we don't need Mongoose Document methods
     // Optimize with .select() to only fetch needed fields
     const products = await Product.find(query)
-      .select('name slug image categoryId totalSold packages isActive isFeatured')
+      .select('name slug thumbnail categoryId totalSold packages isActive isFeatured')
       .populate('categoryId', 'name slug icon')
       .sort({ totalSold: -1 })
       .lean();
