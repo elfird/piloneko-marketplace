@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateAdmin } from './adminRoutes';
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 import { WebhookLog } from '../models/WebhookLog';
 
 const router = express.Router();

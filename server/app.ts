@@ -10,6 +10,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
+import hpp from "hpp";
 import connectDB from "./config/db";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
@@ -41,6 +42,9 @@ app.use(
     crossOriginEmbedderPolicy: false,
   })
 );
+
+// Prevent HTTP Parameter Pollution
+app.use(hpp());
 
 // Compression Middleware (Gzip/Brotli)
 app.use(compression());
@@ -85,6 +89,7 @@ connectDB().catch(err => console.error("Initial DB connection failed:", err.mess
 // ==========================================
 // IMPORT ROUTES
 // ==========================================
+import authRoutes from "./routes/auth.routes";
 import productRoutes from "./routes/productRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import adminRoutes from "./routes/adminRoutes";
@@ -102,6 +107,8 @@ import gameRoutes from "./routes/gameRoutes";
 import topupOrderRoutes from "./routes/topupOrderRoutes";
 import seoRoutes from "./routes/seoRoutes";
 
+import { globalErrorHandler } from "./middlewares/error.middleware";
+
 // ==========================================
 // PUBLIC API ENDPOINTS
 // ==========================================
@@ -116,6 +123,7 @@ app.use("/api/topup-orders", topupOrderRoutes);
 // ==========================================
 // ADMIN API ENDPOINTS (PROTECTED)
 // ==========================================
+app.use("/api/admin", authRoutes); // Auth uses /login and /me
 app.use("/api/admin/stocks", stockRoutes);
 app.use("/api/admin/payment-settings", paymentSettingsRoutes);
 app.use("/api/admin/webhook-logs", webhookLogRoutes);
@@ -156,9 +164,6 @@ if (IS_PRODUCTION && !process.env.VERCEL) {
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error("Global Error:", err);
-  res.status(500).json({ error: err.message || "Internal Server Error" });
-});
+app.use(globalErrorHandler);
 
 export default app;

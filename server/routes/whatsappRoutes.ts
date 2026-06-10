@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateAdmin } from './adminRoutes';
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 import { WhatsAppSettings, WhatsAppLog, WhatsAppCampaign } from '../models/WhatsApp';
 import { encryptToken, testFoonteConnection, getWhatsAppSettings, sendWhatsAppMessage } from '../services/whatsappService';
 

@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { createClient } from "@supabase/supabase-js";
-import { authenticateAdmin } from "./adminRoutes";
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 

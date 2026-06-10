@@ -5,7 +5,7 @@ import GameProduct from "../models/GameProduct";
 import DigiflazzSetting from "../models/DigiflazzSetting";
 import TopupOrder from "../models/TopupOrder";
 import { DigiflazzService } from "../services/digiflazzService";
-import { authenticateAdmin } from "./adminRoutes"; 
+import { authenticateAdmin } from '../middlewares/auth.middleware'; 
 
 const router = express.Router();
 

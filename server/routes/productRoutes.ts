@@ -1,7 +1,7 @@
 import express from 'express';
 import Product from '../models/Product';
 import Category from '../models/Category';
-import { authenticateAdmin } from './adminRoutes';
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 import { cacheMiddleware } from '../middleware/cacheMiddleware';
 
 const router = express.Router();

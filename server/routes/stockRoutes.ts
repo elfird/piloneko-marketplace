@@ -1,7 +1,7 @@
 import express from 'express';
 import AccountStock from '../models/AccountStock';
 import Product from '../models/Product';
-import { authenticateAdmin } from './adminRoutes';
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 

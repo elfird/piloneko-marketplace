@@ -9,52 +9,9 @@ import Product from "../models/Product";
 import Category from "../models/Category";
 import AccountStock from '../models/AccountStock';
 import { accumulateCustomerSpent } from '../services/customerService';
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 
 const router = express.Router();
-
-const hashPassword = (password: string): string => crypto.createHash("sha256").update(password).digest("hex");
-const generateAdminToken = (email: string, passwordHash: string): string => {
-  const secret = process.env.SESSION_SECRET || "my-super-secret-cyberpunk-key";
-  return crypto.createHash("sha256").update(`${email}:${passwordHash}:${secret}`).digest("hex");
-};
-
-// Middleware Autentikasi
-export const authenticateAdmin = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ error: "Unauthorized" });
-    
-    const token = authHeader.split(" ")[1];
-    const admin = await Admin.findOne();
-    if (!admin) return res.status(401).json({ error: "No admin" });
-
-    if (token !== generateAdminToken(admin.email, admin.passwordHash)) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    (req as any).admin = admin;
-    next();
-  } catch (error) {
-    res.status(500).json({ error: "Auth failed" });
-  }
-};
-
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const admin = await Admin.findOne({ email });
-    if (!admin || admin.passwordHash !== hashPassword(password)) {
-      return res.status(401).json({ error: "Kredensial tidak valid" });
-    }
-    const token = generateAdminToken(admin.email, admin.passwordHash);
-    res.json({ success: true, token, admin: { name: admin.name, email: admin.email } });
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-
-router.get('/me', authenticateAdmin, (req, res) => {
-  const admin = (req as any).admin;
-  res.json({ authorized: true, admin: { name: admin.name, email: admin.email } });
-});
 
 router.get('/stats', authenticateAdmin, async (req, res) => {
   try {

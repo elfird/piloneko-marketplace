@@ -6,7 +6,7 @@ import { ActivityLog } from '../models/ActivityLog';
 
 const router = express.Router();
 
-import { authenticateAdmin } from './adminRoutes';
+import { authenticateAdmin } from '../middlewares/auth.middleware';
 
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'piloneko-secure-key-32chars-!!!!';
