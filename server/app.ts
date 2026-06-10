@@ -11,6 +11,8 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 import connectDB from "./config/db";
+import compression from "compression";
+import rateLimit from "express-rate-limit";
 
 // ==========================================
 // INISIALISASI APLIKASI
@@ -39,6 +41,19 @@ app.use(
     crossOriginEmbedderPolicy: false,
   })
 );
+
+// Compression Middleware (Gzip/Brotli)
+app.use(compression());
+
+// Global API Rate Limiter
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 menit
+  max: 200, // Limit 200 request per menit per IP
+  message: { error: "Terlalu banyak permintaan dari IP ini, coba lagi nanti." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/", apiLimiter);
 
 // CORS — izinkan origin dari env atau localhost dev
 const allowedOrigins = process.env.APP_URL
@@ -85,10 +100,12 @@ import uploadRoutes from "./routes/uploadRoutes";
 import adminGameRoutes from "./routes/adminGameRoutes";
 import gameRoutes from "./routes/gameRoutes";
 import topupOrderRoutes from "./routes/topupOrderRoutes";
+import seoRoutes from "./routes/seoRoutes";
 
 // ==========================================
 // PUBLIC API ENDPOINTS
 // ==========================================
+app.use("/", seoRoutes); // /sitemap.xml and /robots.txt
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);

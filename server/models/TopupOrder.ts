@@ -15,4 +15,7 @@ const topupOrderSchema = new mongoose.Schema({
   digiflazzResponse: { type: mongoose.Schema.Types.Mixed }, // Store API response
 }, { timestamps: true });
 
+topupOrderSchema.index({ customerWa: 1 });
+topupOrderSchema.index({ status: 1, createdAt: -1 });
+
 export default mongoose.models.TopupOrder || mongoose.model("TopupOrder", topupOrderSchema);

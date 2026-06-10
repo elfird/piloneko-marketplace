@@ -1,26 +1,32 @@
 import express from 'express';
 import Category from '../models/Category';
 import Product from '../models/Product';
-import { authenticateAdmin } from './adminRoutes';
+import { cacheMiddleware } from '../middleware/cacheMiddleware';
 
 const router = express.Router();
 
-// GET all categories
-router.get('/', async (req, res) => {
+// GET all categories (Cached for 5 mins)
+router.get('/', cacheMiddleware(300), async (req, res) => {
   try {
     const categories = await Category.find().sort({ sortOrder: 1 }).lean();
     
-    // Manual product count for each category
-    const categoriesWithCount = await Promise.all(
-      categories.map(async (cat) => {
-        const productCount = await Product.countDocuments({ categoryId: cat._id });
-        return {
-          ...cat,
-          id: cat._id,
-          _count: { products: productCount }
-        };
-      })
-    );
+    // Optimize N+1 query with aggregation
+    const productCounts = await Product.aggregate([
+      { $group: { _id: '$categoryId', count: { $sum: 1 } } }
+    ]);
+    
+    const countMap = new Map();
+    productCounts.forEach(pc => {
+      countMap.set(pc._id?.toString(), pc.count);
+    });
+
+    const categoriesWithCount = categories.map((cat) => {
+      return {
+        ...cat,
+        id: cat._id,
+        _count: { products: countMap.get(cat._id?.toString()) || 0 }
+      };
+    });
 
     res.json(categoriesWithCount);
   } catch (error: any) {

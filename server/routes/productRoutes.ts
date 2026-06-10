@@ -2,13 +2,14 @@ import express from 'express';
 import Product from '../models/Product';
 import Category from '../models/Category';
 import { authenticateAdmin } from './adminRoutes';
+import { cacheMiddleware } from '../middleware/cacheMiddleware';
 
 const router = express.Router();
 
 /**
  * Mongoose Example: Get all active products with categories and filtered packages
  */
-router.get('/', async (req, res) => {
+router.get('/', cacheMiddleware(300), async (req, res) => {
   try {
     const { categorySlug, isFeatured } = req.query;
     
@@ -29,7 +30,9 @@ router.get('/', async (req, res) => {
     }
 
     // Use .lean() for faster JSON serialization since we don't need Mongoose Document methods
+    // Optimize with .select() to only fetch needed fields
     const products = await Product.find(query)
+      .select('name slug image categoryId totalSold packages isActive isFeatured')
       .populate('categoryId', 'name slug icon')
       .sort({ totalSold: -1 })
       .lean();
@@ -55,7 +58,7 @@ router.get('/', async (req, res) => {
 /**
  * Mongoose Example: Get product details by slug (includes available stock count)
  */
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', cacheMiddleware(300), async (req, res) => {
   try {
     const { slug } = req.params;
     
