@@ -2,6 +2,7 @@ import express from 'express';
 import midtransClient from 'midtrans-client';
 import { Payment } from '../models/Payment';
 import Order from '../models/Order';
+import TopupOrder from '../models/TopupOrder';
 import Product from '../models/Product';
 import crypto from 'crypto';
 import { Notification } from '../models/AdminAndOthers';
@@ -262,8 +263,13 @@ router.get('/status/:orderId', async (req, res) => {
     const { orderId } = req.params;
     let payment = await Payment.findOne({ orderId });
     let order = await Order.findOne({ refCode: orderId });
+    let topupOrder = null;
 
-    if (!payment || !order) {
+    if (!order) {
+      topupOrder = await TopupOrder.findOne({ invoice: orderId });
+    }
+
+    if (!payment || (!order && !topupOrder)) {
       return res.status(404).json({ error: 'Transaksi tidak ditemukan' });
     }
 
@@ -282,7 +288,8 @@ router.get('/status/:orderId', async (req, res) => {
             const synced = await processMidtransStatus(orderId, midtransStatus.transaction_status, midtransStatus.fraud_status);
             if (synced) {
               payment = synced.payment;
-              order = synced.order;
+              if (order) order = synced.order;
+              else topupOrder = synced.order;
             }
           }
         }
@@ -296,10 +303,10 @@ router.get('/status/:orderId', async (req, res) => {
       orderId: payment.orderId,
       productName: payment.productName,
       amount: payment.amount,
-      buyerName: order.buyerName,
+      buyerName: order ? order.buyerName : topupOrder.customerName,
       buyerWa: payment.buyerWa,
       transactionStatus: payment.transactionStatus,
-      orderStatus: order.status,
+      orderStatus: order ? order.status : topupOrder.status,
       createdAt: payment.createdAt,
       snapToken: payment.snapToken,
     });
