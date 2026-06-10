@@ -12,6 +12,26 @@ const router = express.Router();
 router.use(authenticateAdmin); // Protect all routes
 
 // ========================
+// TOPUP DASHBOARD STATS
+// ========================
+router.get("/dashboard-stats", async (req, res) => {
+  try {
+    const totalGames = await Game.countDocuments();
+    const activeProducts = await GameProduct.countDocuments({ status: true });
+    // TopupOrders with status SUCCESS
+    const successOrders = await TopupOrder.countDocuments({ status: { $in: ["SUCCESS", "PAID"] } });
+    
+    res.json({
+      totalGames,
+      activeProducts,
+      successOrders
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================
 // GAMES CRUD
 // ========================
 router.get("/games", async (req, res) => {
