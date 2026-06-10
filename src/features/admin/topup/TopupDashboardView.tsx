@@ -18,7 +18,7 @@ export const TopupDashboardView: React.FC<Props> = ({ token }) => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/games/dashboard-stats", {
+      const res = await fetch("/api/admin/topup/dashboard-stats", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
