@@ -35,8 +35,11 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
   // Filter products based on active tab & query string
   const filteredProducts = products.filter((prod) => {
+    const prodCatId = typeof prod.categoryId === "object" && prod.categoryId
+      ? ((prod.categoryId as any)._id || (prod.categoryId as any).id)
+      : prod.categoryId;
     const matchesCategory =
-      selectedCategory === "ALL" || prod.categoryId === selectedCategory;
+      selectedCategory === "ALL" || prodCatId === selectedCategory;
     const matchesSearch =
       searchQuery.trim() === "" ||
       prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
