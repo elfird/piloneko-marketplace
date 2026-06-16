@@ -148,6 +148,18 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+// Debug endpoint — cek env vars yang aktif (non-sensitive)
+app.get("/api/debug-env", (_req, res) => {
+  res.json({
+    NODE_ENV: process.env.NODE_ENV || "MISSING",
+    MONGO_URI: process.env.MONGO_URI ? "SET ✓" : "MISSING ✗",
+    JWT_SECRET: process.env.JWT_SECRET ? "SET ✓" : "MISSING ✗",
+    SESSION_SECRET: process.env.SESSION_SECRET ? "SET ✓" : "MISSING ✗",
+    ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ? "SET ✓" : "MISSING ✗",
+    VERCEL: process.env.VERCEL || "false",
+  });
+});
+
 // ==========================================
 // STATIC FILES (Production / Non-Vercel)
 // ==========================================

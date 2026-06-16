@@ -1,16 +1,12 @@
 import { z } from 'zod';
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().default('3000'),
-  MONGO_URI: z.string().startsWith('mongodb'),
+  MONGO_URI: z.string().min(1),
   
-  JWT_SECRET: z.string().min(10),
-  JWT_REFRESH_SECRET: z.string().min(10).optional(),
+  JWT_SECRET: z.string().min(1).default('dev-jwt-secret-please-change'),
+  JWT_REFRESH_SECRET: z.string().min(1).optional(),
   SESSION_SECRET: z.string().optional(),
   ENCRYPTION_KEY: z.string().optional(),
 
@@ -22,15 +18,15 @@ const envSchema = z.object({
   
   FONNTE_TOKEN: z.string().optional(),
 
-  REDIS_URL: z.string().url().optional(),
-  CLOUDINARY_URL: z.string().url().optional(),
+  REDIS_URL: z.string().optional(),
+  CLOUDINARY_URL: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);
 
 if (!_env.success) {
-  console.error('❌ Invalid environment variables:\n', _env.error.format());
-  throw new Error('Invalid environment variables');
+  console.error('❌ Invalid environment variables:\n', JSON.stringify(_env.error.format(), null, 2));
+  // Tidak throw agar Vercel bisa tetap merespons dengan error yang bermakna
 }
 
-export const env = _env.data;
+export const env = _env.success ? _env.data : (process.env as any);

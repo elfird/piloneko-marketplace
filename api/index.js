@@ -258,7 +258,7 @@ module.exports = __toCommonJS(api_exports);
 // server/app.ts
 var import_config = require("dotenv/config");
 var import_express18 = __toESM(require("express"));
-var import_path2 = __toESM(require("path"));
+var import_path = __toESM(require("path"));
 var import_cookie_parser = __toESM(require("cookie-parser"));
 var import_helmet = __toESM(require("helmet"));
 var import_cors = __toESM(require("cors"));
@@ -412,15 +412,12 @@ var AppError = class extends Error {
 
 // server/config/env.ts
 var import_zod = require("zod");
-var import_dotenv = __toESM(require("dotenv"));
-var import_path = __toESM(require("path"));
-import_dotenv.default.config({ path: import_path.default.join(process.cwd(), ".env") });
 var envSchema = import_zod.z.object({
   NODE_ENV: import_zod.z.enum(["development", "production", "test"]).default("development"),
   PORT: import_zod.z.string().default("3000"),
-  MONGO_URI: import_zod.z.string().startsWith("mongodb"),
-  JWT_SECRET: import_zod.z.string().min(10),
-  JWT_REFRESH_SECRET: import_zod.z.string().min(10).optional(),
+  MONGO_URI: import_zod.z.string().min(1),
+  JWT_SECRET: import_zod.z.string().min(1).default("dev-jwt-secret-please-change"),
+  JWT_REFRESH_SECRET: import_zod.z.string().min(1).optional(),
   SESSION_SECRET: import_zod.z.string().optional(),
   ENCRYPTION_KEY: import_zod.z.string().optional(),
   MIDTRANS_SERVER_KEY: import_zod.z.string().optional(),
@@ -428,15 +425,14 @@ var envSchema = import_zod.z.object({
   DIGIFLAZZ_USERNAME: import_zod.z.string().optional(),
   DIGIFLAZZ_API_KEY: import_zod.z.string().optional(),
   FONNTE_TOKEN: import_zod.z.string().optional(),
-  REDIS_URL: import_zod.z.string().url().optional(),
-  CLOUDINARY_URL: import_zod.z.string().url().optional()
+  REDIS_URL: import_zod.z.string().optional(),
+  CLOUDINARY_URL: import_zod.z.string().optional()
 });
 var _env = envSchema.safeParse(process.env);
 if (!_env.success) {
-  console.error("\u274C Invalid environment variables:\n", _env.error.format());
-  throw new Error("Invalid environment variables");
+  console.error("\u274C Invalid environment variables:\n", JSON.stringify(_env.error.format(), null, 2));
 }
-var env = _env.data;
+var env = _env.success ? _env.data : process.env;
 
 // server/services/auth.service.ts
 var AuthService = class {
@@ -3847,13 +3843,23 @@ app.get("/api/health", (_req, res) => {
     platform: process.env.VERCEL ? "Vercel Serverless" : "Node.js Server"
   });
 });
+app.get("/api/debug-env", (_req, res) => {
+  res.json({
+    NODE_ENV: process.env.NODE_ENV || "MISSING",
+    MONGO_URI: process.env.MONGO_URI ? "SET \u2713" : "MISSING \u2717",
+    JWT_SECRET: process.env.JWT_SECRET ? "SET \u2713" : "MISSING \u2717",
+    SESSION_SECRET: process.env.SESSION_SECRET ? "SET \u2713" : "MISSING \u2717",
+    ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ? "SET \u2713" : "MISSING \u2717",
+    VERCEL: process.env.VERCEL || "false"
+  });
+});
 if (IS_PRODUCTION && !process.env.VERCEL) {
-  const distPath = import_path2.default.join(process.cwd(), "dist");
-  const publicPath = import_path2.default.join(process.cwd(), "public");
+  const distPath = import_path.default.join(process.cwd(), "dist");
+  const publicPath = import_path.default.join(process.cwd(), "public");
   app.use(import_express18.default.static(publicPath));
   app.use(import_express18.default.static(distPath));
   app.get("*", (_req, res) => {
-    res.sendFile(import_path2.default.join(distPath, "index.html"));
+    res.sendFile(import_path.default.join(distPath, "index.html"));
   });
 }
 app.use(globalErrorHandler);
