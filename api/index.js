@@ -29,51 +29,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// server/models/Product.ts
-var Product_exports = {};
-__export(Product_exports, {
-  default: () => Product_default
-});
-var import_mongoose2, packageSchema, productSchema, Product, Product_default;
-var init_Product = __esm({
-  "server/models/Product.ts"() {
-    import_mongoose2 = __toESM(require("mongoose"));
-    packageSchema = new import_mongoose2.Schema({
-      label: { type: String, required: true },
-      price: { type: Number, required: true },
-      originalPrice: { type: Number },
-      durationDays: { type: Number, required: true },
-      warrantyDays: { type: Number, required: true },
-      maxDevices: { type: Number, default: 1 },
-      stockCount: { type: Number, default: 0 },
-      isActive: { type: Boolean, default: true },
-      digiflazzSkuCode: { type: String }
-    });
-    productSchema = new import_mongoose2.Schema(
-      {
-        categoryId: { type: import_mongoose2.Schema.Types.ObjectId, ref: "Category", required: true },
-        name: { type: String, required: true },
-        slug: { type: String, required: true, unique: true },
-        description: { type: String, required: true },
-        thumbnail: { type: String },
-        isActive: { type: Boolean, default: true },
-        isFeatured: { type: Boolean, default: false },
-        totalSold: { type: Number, default: 0 },
-        seoTitle: { type: String },
-        seoDescription: { type: String },
-        seoKeywords: { type: String },
-        seoOgImage: { type: String },
-        packages: [packageSchema]
-      },
-      { timestamps: true }
-    );
-    productSchema.index({ categoryId: 1 });
-    productSchema.index({ isActive: 1, isFeatured: -1 });
-    Product = import_mongoose2.default.models.Product || import_mongoose2.default.model("Product", productSchema);
-    Product_default = Product;
-  }
-});
-
 // server/models/Settings.ts
 var import_mongoose7, faqItemSchema, FaqItem, waTemplateSchema, WaTemplate, siteContentSchema, SiteContent;
 var init_Settings = __esm({
@@ -111,11 +66,11 @@ var init_Settings = __esm({
 });
 
 // server/models/WhatsApp.ts
-var import_mongoose15, whatsappSettingsSchema, WhatsAppSettings, whatsappLogSchema, WhatsAppLog, whatsappCampaignSchema, WhatsAppCampaign;
+var import_mongoose17, whatsappSettingsSchema, WhatsAppSettings, whatsappLogSchema, WhatsAppLog, whatsappCampaignSchema, WhatsAppCampaign;
 var init_WhatsApp = __esm({
   "server/models/WhatsApp.ts"() {
-    import_mongoose15 = __toESM(require("mongoose"));
-    whatsappSettingsSchema = new import_mongoose15.Schema(
+    import_mongoose17 = __toESM(require("mongoose"));
+    whatsappSettingsSchema = new import_mongoose17.Schema(
       {
         whatsappNumber: { type: String, default: "" },
         adminName: { type: String, default: "Admin" },
@@ -137,19 +92,19 @@ var init_WhatsApp = __esm({
       },
       { timestamps: true }
     );
-    WhatsAppSettings = import_mongoose15.default.models.WhatsAppSettings || import_mongoose15.default.model("WhatsAppSettings", whatsappSettingsSchema);
-    whatsappLogSchema = new import_mongoose15.Schema(
+    WhatsAppSettings = import_mongoose17.default.models.WhatsAppSettings || import_mongoose17.default.model("WhatsAppSettings", whatsappSettingsSchema);
+    whatsappLogSchema = new import_mongoose17.Schema(
       {
         phone: { type: String, required: true },
         message: { type: String, required: true },
         status: { type: String, enum: ["SUCCESS", "FAILED", "PENDING"], default: "PENDING" },
         response: { type: String },
-        campaignId: { type: import_mongoose15.Schema.Types.ObjectId, ref: "WhatsAppCampaign" }
+        campaignId: { type: import_mongoose17.Schema.Types.ObjectId, ref: "WhatsAppCampaign" }
       },
       { timestamps: true }
     );
-    WhatsAppLog = import_mongoose15.default.models.WhatsAppLog || import_mongoose15.default.model("WhatsAppLog", whatsappLogSchema);
-    whatsappCampaignSchema = new import_mongoose15.Schema(
+    WhatsAppLog = import_mongoose17.default.models.WhatsAppLog || import_mongoose17.default.model("WhatsAppLog", whatsappLogSchema);
+    whatsappCampaignSchema = new import_mongoose17.Schema(
       {
         campaignName: { type: String, required: true },
         targetCustomer: { type: String, enum: ["ALL", "HAS_ORDER", "NO_ORDER", "SPECIFIC"], default: "ALL" },
@@ -163,7 +118,7 @@ var init_WhatsApp = __esm({
       },
       { timestamps: true }
     );
-    WhatsAppCampaign = import_mongoose15.default.models.WhatsAppCampaign || import_mongoose15.default.model("WhatsAppCampaign", whatsappCampaignSchema);
+    WhatsAppCampaign = import_mongoose17.default.models.WhatsAppCampaign || import_mongoose17.default.model("WhatsAppCampaign", whatsappCampaignSchema);
   }
 });
 
@@ -293,114 +248,6 @@ var init_whatsappService = __esm({
   }
 });
 
-// server/models/DigiflazzSetting.ts
-var import_mongoose16, digiflazzSettingSchema, DigiflazzSetting;
-var init_DigiflazzSetting = __esm({
-  "server/models/DigiflazzSetting.ts"() {
-    import_mongoose16 = __toESM(require("mongoose"));
-    digiflazzSettingSchema = new import_mongoose16.Schema(
-      {
-        username: { type: String, required: true },
-        apiKey: { type: String, required: true },
-        isProduction: { type: Boolean, default: false },
-        isActive: { type: Boolean, default: true },
-        connectionStatus: {
-          type: String,
-          enum: ["connected", "disconnected", "invalid_key", "untested"],
-          default: "untested"
-        },
-        lastConnectedAt: { type: Date }
-      },
-      { timestamps: true }
-    );
-    DigiflazzSetting = import_mongoose16.default.models.DigiflazzSetting || import_mongoose16.default.model("DigiflazzSetting", digiflazzSettingSchema);
-  }
-});
-
-// server/utils/encryption.ts
-var import_crypto_js2, ENCRYPTION_KEY3, encryptKey2, decryptKey2;
-var init_encryption = __esm({
-  "server/utils/encryption.ts"() {
-    import_crypto_js2 = __toESM(require("crypto-js"));
-    ENCRYPTION_KEY3 = process.env.ENCRYPTION_KEY || "piloneko-secure-key-32chars-!!!!";
-    encryptKey2 = (text) => {
-      return import_crypto_js2.default.AES.encrypt(text, ENCRYPTION_KEY3).toString();
-    };
-    decryptKey2 = (ciphertext) => {
-      const bytes = import_crypto_js2.default.AES.decrypt(ciphertext, ENCRYPTION_KEY3);
-      return bytes.toString(import_crypto_js2.default.enc.Utf8);
-    };
-  }
-});
-
-// server/services/digiflazzService.ts
-var digiflazzService_exports = {};
-__export(digiflazzService_exports, {
-  cekSaldo: () => cekSaldo,
-  getDigiflazzConfig: () => getDigiflazzConfig,
-  topUp: () => topUp
-});
-var import_crypto3, getDigiflazzConfig, cekSaldo, topUp;
-var init_digiflazzService = __esm({
-  "server/services/digiflazzService.ts"() {
-    import_crypto3 = __toESM(require("crypto"));
-    init_DigiflazzSetting();
-    init_encryption();
-    getDigiflazzConfig = async () => {
-      const setting = await DigiflazzSetting.findOne();
-      if (!setting || !setting.isActive || !setting.apiKey) {
-        throw new Error("Digiflazz belum dikonfigurasi atau sedang tidak aktif");
-      }
-      const decryptedKey = decryptKey2(setting.apiKey);
-      return {
-        username: setting.username,
-        apiKey: decryptedKey,
-        isProduction: setting.isProduction
-      };
-    };
-    cekSaldo = async () => {
-      const config = await getDigiflazzConfig();
-      const signString = config.username + config.apiKey + "depo";
-      const sign = import_crypto3.default.createHash("md5").update(signString).digest("hex");
-      const payload = {
-        cmd: "deposit",
-        username: config.username,
-        sign
-      };
-      const response = await fetch("https://api.digiflazz.com/v1/cek-saldo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json();
-      if (!response.ok || data.data?.rc !== "00") {
-        throw new Error(data.data?.message || "Gagal mengecek saldo Digiflazz");
-      }
-      return data.data;
-    };
-    topUp = async (skuCode, customerNo, refId) => {
-      const config = await getDigiflazzConfig();
-      const signString = config.username + config.apiKey + refId;
-      const sign = import_crypto3.default.createHash("md5").update(signString).digest("hex");
-      const payload = {
-        username: config.username,
-        buyer_sku_code: skuCode,
-        customer_no: customerNo,
-        ref_id: refId,
-        sign,
-        testing: !config.isProduction
-      };
-      const response = await fetch("https://api.digiflazz.com/v1/transaction", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json();
-      return data.data;
-    };
-  }
-});
-
 // server/api.ts
 var api_exports = {};
 __export(api_exports, {
@@ -410,11 +257,12 @@ module.exports = __toCommonJS(api_exports);
 
 // server/app.ts
 var import_config = require("dotenv/config");
-var import_express14 = __toESM(require("express"));
-var import_path = __toESM(require("path"));
+var import_express18 = __toESM(require("express"));
+var import_path2 = __toESM(require("path"));
 var import_cookie_parser = __toESM(require("cookie-parser"));
 var import_helmet = __toESM(require("helmet"));
 var import_cors = __toESM(require("cors"));
+var import_hpp = __toESM(require("hpp"));
 
 // server/config/db.ts
 var import_mongoose = __toESM(require("mongoose"));
@@ -428,7 +276,11 @@ var connectDB = async () => {
       return;
     }
     if (!global._mongooseConnection) {
-      global._mongooseConnection = import_mongoose.default.connect(mongoURI);
+      global._mongooseConnection = import_mongoose.default.connect(mongoURI, {
+        maxPoolSize: 50,
+        serverSelectionTimeoutMS: 5e3,
+        socketTimeoutMS: 45e3
+      });
     }
     const conn = await global._mongooseConnection;
     console.log(`MongoDB Connected: ${conn.connection.host}`);
@@ -439,9 +291,320 @@ var connectDB = async () => {
 };
 var db_default = connectDB;
 
-// server/routes/productRoutes.ts
+// server/app.ts
+var import_compression = __toESM(require("compression"));
+var import_express_rate_limit3 = __toESM(require("express-rate-limit"));
+
+// server/routes/auth.routes.ts
 var import_express = __toESM(require("express"));
-init_Product();
+
+// server/utils/catchAsync.ts
+var catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
+};
+
+// server/controllers/auth.controller.ts
+var AuthController = class {
+  constructor(authService2) {
+    this.authService = authService2;
+    this.login = catchAsync(async (req, res) => {
+      const { email, password } = req.body;
+      const result = await this.authService.login(email, password);
+      if (result.refreshToken) {
+        res.cookie("refreshToken", result.refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1e3
+          // 7 days
+        });
+      }
+      return res.status(200).json({
+        admin: result.admin,
+        token: result.accessToken
+      });
+    });
+    this.getMe = catchAsync(async (req, res) => {
+      const adminId = req.admin.id;
+      const admin = await this.authService.getMe(adminId);
+      res.json({ authorized: true, admin: { name: admin.name, email: admin.email } });
+    });
+  }
+};
+
+// server/services/auth.service.ts
+var import_crypto = __toESM(require("crypto"));
+var import_jsonwebtoken = __toESM(require("jsonwebtoken"));
+
+// server/models/AdminAndOthers.ts
+var import_mongoose2 = __toESM(require("mongoose"));
+var adminSchema = new import_mongoose2.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    passwordHash: { type: String, required: true }
+  },
+  { timestamps: true }
+);
+var Admin = import_mongoose2.default.models.Admin || import_mongoose2.default.model("Admin", adminSchema);
+var voucherSchema = new import_mongoose2.Schema(
+  {
+    code: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    discountType: { type: String, enum: ["PERCENTAGE", "FIXED"], required: true },
+    discountValue: { type: Number, required: true },
+    minPurchase: { type: Number, default: 0 },
+    maxUsage: { type: Number, required: true },
+    usageCount: { type: Number, default: 0 },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+var Voucher = import_mongoose2.default.models.Voucher || import_mongoose2.default.model("Voucher", voucherSchema);
+var warrantyTicketSchema = new import_mongoose2.Schema(
+  {
+    refCode: { type: String, required: true, unique: true },
+    orderId: { type: import_mongoose2.Schema.Types.ObjectId, ref: "Order", required: true },
+    buyerName: { type: String, required: true },
+    buyerWa: { type: String, required: true },
+    problem: { type: String, required: true },
+    status: { type: String, enum: ["OPEN", "PROCESSING", "RESOLVED", "REJECTED"], default: "OPEN" },
+    adminResponse: { type: String }
+  },
+  { timestamps: true }
+);
+var WarrantyTicket = import_mongoose2.default.models.WarrantyTicket || import_mongoose2.default.model("WarrantyTicket", warrantyTicketSchema);
+var activityLogSchema = new import_mongoose2.Schema(
+  {
+    adminId: { type: import_mongoose2.Schema.Types.ObjectId, ref: "Admin" },
+    action: { type: String, required: true },
+    details: { type: String },
+    ipAddress: { type: String }
+  },
+  { timestamps: { createdAt: true, updatedAt: false } }
+);
+var ActivityLog = import_mongoose2.default.models.ActivityLog || import_mongoose2.default.model("ActivityLog", activityLogSchema);
+var notificationSchema = new import_mongoose2.Schema(
+  {
+    title: { type: String, required: true },
+    message: { type: String, required: true },
+    type: { type: String, enum: ["ORDER", "TICKET", "SYSTEM", "ALERT", "PAYMENT", "WARRANTY", "STOCK", "REVIEW"], default: "SYSTEM" },
+    isRead: { type: Boolean, default: false },
+    link: { type: String }
+  },
+  { timestamps: { createdAt: true, updatedAt: false } }
+);
+var Notification = import_mongoose2.default.models.Notification || import_mongoose2.default.model("Notification", notificationSchema);
+
+// server/utils/AppError.ts
+var AppError = class extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+    this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
+  }
+};
+
+// server/config/env.ts
+var import_zod = require("zod");
+var import_dotenv = __toESM(require("dotenv"));
+var import_path = __toESM(require("path"));
+import_dotenv.default.config({ path: import_path.default.join(process.cwd(), ".env") });
+var envSchema = import_zod.z.object({
+  NODE_ENV: import_zod.z.enum(["development", "production", "test"]).default("development"),
+  PORT: import_zod.z.string().default("3000"),
+  MONGO_URI: import_zod.z.string().startsWith("mongodb"),
+  JWT_SECRET: import_zod.z.string().min(10),
+  JWT_REFRESH_SECRET: import_zod.z.string().min(10).optional(),
+  SESSION_SECRET: import_zod.z.string().optional(),
+  ENCRYPTION_KEY: import_zod.z.string().optional(),
+  MIDTRANS_SERVER_KEY: import_zod.z.string().optional(),
+  MIDTRANS_CLIENT_KEY: import_zod.z.string().optional(),
+  DIGIFLAZZ_USERNAME: import_zod.z.string().optional(),
+  DIGIFLAZZ_API_KEY: import_zod.z.string().optional(),
+  FONNTE_TOKEN: import_zod.z.string().optional(),
+  REDIS_URL: import_zod.z.string().url().optional(),
+  CLOUDINARY_URL: import_zod.z.string().url().optional()
+});
+var _env = envSchema.safeParse(process.env);
+if (!_env.success) {
+  console.error("\u274C Invalid environment variables:\n", _env.error.format());
+  throw new Error("Invalid environment variables");
+}
+var env = _env.data;
+
+// server/services/auth.service.ts
+var AuthService = class {
+  hashPassword(password) {
+    return import_crypto.default.createHash("sha256").update(password).digest("hex");
+  }
+  generateTokens(adminId, email) {
+    const accessToken = import_jsonwebtoken.default.sign(
+      { id: adminId, email, role: "admin" },
+      env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    const refreshToken = env.JWT_REFRESH_SECRET ? import_jsonwebtoken.default.sign(
+      { id: adminId, email },
+      env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" }
+    ) : void 0;
+    return { accessToken, refreshToken };
+  }
+  async login(email, passwordString) {
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      throw new AppError("Kredensial tidak valid", 401);
+    }
+    const inputHash = this.hashPassword(passwordString);
+    if (admin.passwordHash !== inputHash) {
+      throw new AppError("Kredensial tidak valid", 401);
+    }
+    const tokens = this.generateTokens(admin._id.toString(), admin.email);
+    return {
+      admin: {
+        id: admin._id,
+        name: admin.name,
+        email: admin.email
+      },
+      ...tokens
+    };
+  }
+  async getMe(adminId) {
+    const admin = await Admin.findById(adminId);
+    if (!admin) {
+      throw new AppError("Admin not found", 404);
+    }
+    return {
+      id: admin._id,
+      name: admin.name,
+      email: admin.email
+    };
+  }
+};
+
+// server/middlewares/validation.middleware.ts
+var import_zod2 = require("zod");
+var validate = (schema) => {
+  return async (req, res, next) => {
+    try {
+      await schema.parseAsync({
+        body: req.body,
+        query: req.query,
+        params: req.params
+      });
+      next();
+    } catch (error) {
+      if (error instanceof import_zod2.ZodError) {
+        const errorMessages = error.issues.map((issue) => `${issue.path.join(".")} is ${issue.message}`);
+        next(new AppError(`Invalid input data: ${errorMessages.join(", ")}`, 400));
+      } else {
+        next(error);
+      }
+    }
+  };
+};
+
+// server/validators/auth.validator.ts
+var import_zod3 = require("zod");
+var loginSchema = import_zod3.z.object({
+  body: import_zod3.z.object({
+    email: import_zod3.z.string().email("Invalid email address format"),
+    password: import_zod3.z.string().min(6, "Password must be at least 6 characters long")
+  })
+});
+
+// server/middlewares/auth.middleware.ts
+var import_jsonwebtoken2 = __toESM(require("jsonwebtoken"));
+var authenticateAdmin = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new AppError("Unauthorized: No token provided", 401);
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = import_jsonwebtoken2.default.verify(token, env.JWT_SECRET);
+    req.admin = {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role
+    };
+    next();
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      next(new AppError("Your token has expired! Please log in again.", 401));
+    } else if (error.name === "JsonWebTokenError") {
+      next(new AppError("Invalid token. Please log in again!", 401));
+    } else {
+      next(error);
+    }
+  }
+};
+
+// server/routes/auth.routes.ts
+var authService = new AuthService();
+var authController = new AuthController(authService);
+var router = import_express.default.Router();
+router.post("/login", validate(loginSchema), authController.login);
+router.get("/me", authenticateAdmin, authController.getMe);
+var auth_routes_default = router;
+
+// server/routes/category.routes.ts
+var import_express2 = __toESM(require("express"));
+
+// server/controllers/category.controller.ts
+var CategoryController = class {
+  constructor(categoryService2) {
+    this.categoryService = categoryService2;
+    this.getAll = catchAsync(async (req, res) => {
+      const categories = await this.categoryService.getAllCategories();
+      res.json(categories);
+    });
+    this.create = catchAsync(async (req, res) => {
+      const category = await this.categoryService.createCategory(req.body);
+      res.json({ success: true, category });
+    });
+    this.update = catchAsync(async (req, res) => {
+      const category = await this.categoryService.updateCategory(req.params.id, req.body);
+      res.json({ success: true, category });
+    });
+    this.delete = catchAsync(async (req, res) => {
+      await this.categoryService.deleteCategory(req.params.id);
+      res.json({ success: true });
+    });
+    this.reorder = catchAsync(async (req, res) => {
+      await this.categoryService.reorderCategories(req.body.orders);
+      res.json({ success: true });
+    });
+  }
+};
+
+// server/services/category.service.ts
+var CategoryService = class {
+  constructor(categoryRepository2) {
+    this.categoryRepository = categoryRepository2;
+  }
+  async getAllCategories() {
+    return await this.categoryRepository.findAll();
+  }
+  async createCategory(data) {
+    return await this.categoryRepository.create(data);
+  }
+  async updateCategory(id, data) {
+    return await this.categoryRepository.update(id, data);
+  }
+  async deleteCategory(id) {
+    return await this.categoryRepository.delete(id);
+  }
+  async reorderCategories(orders) {
+    return await this.categoryRepository.reorder(orders);
+  }
+};
 
 // server/models/Category.ts
 var import_mongoose3 = __toESM(require("mongoose"));
@@ -464,71 +627,397 @@ categorySchema.index({ isActive: 1, sortOrder: 1 });
 var Category = import_mongoose3.default.models.Category || import_mongoose3.default.model("Category", categorySchema);
 var Category_default = Category;
 
-// server/routes/productRoutes.ts
-var router = import_express.default.Router();
-router.get("/", async (req, res) => {
-  try {
-    const { categorySlug, isFeatured } = req.query;
+// server/models/Product.ts
+var import_mongoose4 = __toESM(require("mongoose"));
+var packageSchema = new import_mongoose4.Schema({
+  label: { type: String, required: true },
+  price: { type: Number, required: true },
+  originalPrice: { type: Number },
+  durationDays: { type: Number, required: true },
+  warrantyDays: { type: Number, required: true },
+  maxDevices: { type: Number, default: 1 },
+  stockCount: { type: Number, default: 0 },
+  isActive: { type: Boolean, default: true }
+});
+var productSchema = new import_mongoose4.Schema(
+  {
+    categoryId: { type: import_mongoose4.Schema.Types.ObjectId, ref: "Category", required: true },
+    name: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    thumbnail: { type: String },
+    isActive: { type: Boolean, default: true },
+    isFeatured: { type: Boolean, default: false },
+    totalSold: { type: Number, default: 0 },
+    seoTitle: { type: String },
+    seoDescription: { type: String },
+    seoKeywords: { type: String },
+    seoOgImage: { type: String },
+    packages: [packageSchema]
+  },
+  { timestamps: true }
+);
+productSchema.index({ categoryId: 1 });
+productSchema.index({ isActive: 1, isFeatured: -1 });
+var Product = import_mongoose4.default.models.Product || import_mongoose4.default.model("Product", productSchema);
+var Product_default = Product;
+
+// server/repositories/category.repository.ts
+var CategoryRepository = class {
+  async findAll() {
+    const categories = await Category_default.find().sort({ sortOrder: 1 }).lean();
+    const productCounts = await Product_default.aggregate([
+      { $group: { _id: "$categoryId", count: { $sum: 1 } } }
+    ]);
+    const countMap = /* @__PURE__ */ new Map();
+    productCounts.forEach((pc) => {
+      countMap.set(pc._id?.toString(), pc.count);
+    });
+    return categories.map((cat) => ({
+      ...cat,
+      id: cat._id,
+      _count: { products: countMap.get(cat._id?.toString()) || 0 }
+    }));
+  }
+  async create(data) {
+    return await Category_default.create(data);
+  }
+  async update(id, data) {
+    const category = await Category_default.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+    if (!category) throw new AppError("Category not found", 404);
+    return category;
+  }
+  async delete(id) {
+    const category = await Category_default.findByIdAndDelete(id);
+    if (!category) throw new AppError("Category not found", 404);
+    return category;
+  }
+  async reorder(orders) {
+    const bulkOps = orders.map((item) => ({
+      updateOne: {
+        filter: { _id: item.id },
+        update: { sortOrder: item.sortOrder }
+      }
+    }));
+    await Category_default.bulkWrite(bulkOps);
+  }
+};
+
+// server/validators/category.validator.ts
+var import_zod4 = require("zod");
+var createCategorySchema = import_zod4.z.object({
+  body: import_zod4.z.object({
+    name: import_zod4.z.string().min(1, "Name is required"),
+    slug: import_zod4.z.string().min(1, "Slug is required"),
+    icon: import_zod4.z.string().optional(),
+    sortOrder: import_zod4.z.number().int().optional()
+  })
+});
+var updateCategorySchema = import_zod4.z.object({
+  body: import_zod4.z.object({
+    name: import_zod4.z.string().min(1, "Name is required").optional(),
+    slug: import_zod4.z.string().min(1, "Slug is required").optional(),
+    icon: import_zod4.z.string().optional(),
+    sortOrder: import_zod4.z.number().int().optional()
+  })
+});
+var reorderCategorySchema = import_zod4.z.object({
+  body: import_zod4.z.object({
+    orders: import_zod4.z.array(import_zod4.z.object({
+      id: import_zod4.z.string(),
+      sortOrder: import_zod4.z.number().int()
+    })).min(1, "Orders array cannot be empty")
+  })
+});
+
+// server/middleware/cacheMiddleware.ts
+var import_node_cache = __toESM(require("node-cache"));
+var cache = new import_node_cache.default({ stdTTL: 300, checkperiod: 320 });
+var cacheMiddleware = (durationSeconds) => {
+  return (req, res, next) => {
+    if (req.method !== "GET") {
+      return next();
+    }
+    const key = "__express__" + req.originalUrl || req.url;
+    const cachedResponse = cache.get(key);
+    if (cachedResponse) {
+      res.setHeader("X-Cache", "HIT");
+      res.json(cachedResponse);
+      return;
+    }
+    res.setHeader("X-Cache", "MISS");
+    const originalJson = res.json.bind(res);
+    res.json = (body) => {
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        cache.set(key, body, durationSeconds);
+      }
+      return originalJson(body);
+    };
+    next();
+  };
+};
+
+// server/routes/category.routes.ts
+var categoryRepository = new CategoryRepository();
+var categoryService = new CategoryService(categoryRepository);
+var categoryController = new CategoryController(categoryService);
+var publicCategoryRoutes = import_express2.default.Router();
+publicCategoryRoutes.get("/", cacheMiddleware(300), categoryController.getAll);
+var adminCategoryRoutes = import_express2.default.Router();
+adminCategoryRoutes.get("/categories", authenticateAdmin, categoryController.getAll);
+adminCategoryRoutes.post("/categories", authenticateAdmin, validate(createCategorySchema), categoryController.create);
+adminCategoryRoutes.put("/categories/:id", authenticateAdmin, validate(updateCategorySchema), categoryController.update);
+adminCategoryRoutes.delete("/categories/:id", authenticateAdmin, categoryController.delete);
+adminCategoryRoutes.put("/categories-reorder", authenticateAdmin, validate(reorderCategorySchema), categoryController.reorder);
+
+// server/routes/product.routes.ts
+var import_express3 = __toESM(require("express"));
+
+// server/controllers/product.controller.ts
+var ProductController = class {
+  constructor(productService2) {
+    this.productService = productService2;
+    this.getPublicAll = catchAsync(async (req, res) => {
+      const categorySlug = req.query.categorySlug;
+      const isFeatured = req.query.isFeatured === "true" ? true : void 0;
+      const products = await this.productService.getPublicProducts(categorySlug, isFeatured);
+      res.json(products);
+    });
+    this.getPublicDetail = catchAsync(async (req, res) => {
+      const product = await this.productService.getPublicProductDetails(req.params.slug);
+      res.json(product);
+    });
+    this.getAdminAll = catchAsync(async (req, res) => {
+      const products = await this.productService.getAdminProducts();
+      res.json(products);
+    });
+    this.create = catchAsync(async (req, res) => {
+      const product = await this.productService.createProduct(req.body);
+      res.json({ success: true, product });
+    });
+    this.update = catchAsync(async (req, res) => {
+      const product = await this.productService.updateProduct(req.params.id, req.body);
+      res.json({ success: true, product });
+    });
+    this.delete = catchAsync(async (req, res) => {
+      await this.productService.deleteProduct(req.params.id);
+      res.json({ success: true });
+    });
+    this.addPackage = catchAsync(async (req, res) => {
+      const product = await this.productService.addPackage(req.params.productId, req.body);
+      res.json({ success: true, product });
+    });
+    this.updatePackage = catchAsync(async (req, res) => {
+      const product = await this.productService.updatePackage(req.params.productId, req.params.packageId, req.body);
+      res.json({ success: true, product });
+    });
+    this.deletePackage = catchAsync(async (req, res) => {
+      const product = await this.productService.deletePackage(req.params.productId, req.params.packageId);
+      res.json({ success: true, product });
+    });
+  }
+};
+
+// server/services/product.service.ts
+var ProductService = class {
+  constructor(productRepository2) {
+    this.productRepository = productRepository2;
+  }
+  async getPublicProducts(categorySlug, isFeatured) {
+    return await this.productRepository.findPublic(categorySlug, isFeatured);
+  }
+  async getPublicProductDetails(slug) {
+    return await this.productRepository.findPublicBySlug(slug);
+  }
+  async getAdminProducts() {
+    return await this.productRepository.findAllAdmin();
+  }
+  async createProduct(data) {
+    return await this.productRepository.create(data);
+  }
+  async updateProduct(id, data) {
+    return await this.productRepository.update(id, data);
+  }
+  async deleteProduct(id) {
+    return await this.productRepository.delete(id);
+  }
+  async addPackage(productId, packageData) {
+    return await this.productRepository.addPackage(productId, packageData);
+  }
+  async updatePackage(productId, packageId, packageData) {
+    return await this.productRepository.updatePackage(productId, packageId, packageData);
+  }
+  async deletePackage(productId, packageId) {
+    return await this.productRepository.deletePackage(productId, packageId);
+  }
+};
+
+// server/repositories/product.repository.ts
+var ProductRepository = class {
+  // Public
+  async findPublic(categorySlug, isFeatured) {
     const query = { isActive: true };
-    if (isFeatured === "true") {
-      query.isFeatured = true;
+    if (isFeatured !== void 0) {
+      query.isFeatured = isFeatured;
     }
     if (categorySlug) {
       const category = await Category_default.findOne({ slug: categorySlug });
       if (category) {
         query.categoryId = category._id;
       } else {
-        return res.json([]);
+        return [];
       }
     }
-    const products = await Product_default.find(query).populate("categoryId", "name slug icon").sort({ totalSold: -1 }).lean();
-    const mappedProducts = products.map((product) => {
-      return {
-        ...product,
-        id: product._id.toString(),
-        packages: product.packages.filter((p) => p.isActive).sort((a, b) => a.price - b.price).map((p) => ({ ...p, id: p._id?.toString() }))
-      };
-    });
-    res.json(mappedProducts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const products = await Product_default.find(query).select("name slug thumbnail categoryId totalSold packages isActive isFeatured").populate("categoryId", "name slug icon").sort({ totalSold: -1 }).lean();
+    return products.map((product) => ({
+      ...product,
+      id: product._id.toString(),
+      packages: (product.packages || []).filter((p) => p.isActive).sort((a, b) => a.price - b.price).map((p) => ({ ...p, id: p._id?.toString() }))
+    }));
   }
-});
-router.get("/:slug", async (req, res) => {
-  try {
-    const { slug } = req.params;
+  async findPublicBySlug(slug) {
     const product = await Product_default.findOne({ slug, isActive: true }).populate("categoryId", "name slug icon").lean();
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-    const packagesWithStockCount = product.packages.filter((p) => p.isActive).sort((a, b) => a.price - b.price).map((pkg) => ({
+    if (!product) throw new AppError("Product not found", 404);
+    const packages = (product.packages || []).filter((p) => p.isActive).sort((a, b) => a.price - b.price).map((pkg) => ({
       ...pkg,
       id: pkg._id?.toString(),
       availableStock: 999
-      // Selalu tersedia — pengiriman akun dilakukan manual oleh admin
+      // Unmanaged stock
     }));
-    res.json({
+    return {
       ...product,
       id: product._id.toString(),
-      packages: packagesWithStockCount
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+      packages
+    };
   }
+  // Admin
+  async findAllAdmin() {
+    const products = await Product_default.find().populate("categoryId").sort({ createdAt: -1 }).lean();
+    return products.map((p) => ({
+      ...p,
+      id: p._id,
+      packages: (p.packages || []).map((pkg) => ({ ...pkg, id: pkg._id }))
+    }));
+  }
+  async create(data) {
+    return await Product_default.create({ ...data, packages: data.packages || [] });
+  }
+  async update(id, data) {
+    const prod = await Product_default.findByIdAndUpdate(id, data, { new: true });
+    if (!prod) throw new AppError("Product not found", 404);
+    return prod;
+  }
+  async delete(id) {
+    const prod = await Product_default.findByIdAndDelete(id);
+    if (!prod) throw new AppError("Product not found", 404);
+    return prod;
+  }
+  // Packages
+  async addPackage(productId, packageData) {
+    const prod = await Product_default.findByIdAndUpdate(
+      productId,
+      { $push: { packages: packageData } },
+      { new: true }
+    );
+    if (!prod) throw new AppError("Product not found", 404);
+    return prod;
+  }
+  async updatePackage(productId, packageId, packageData) {
+    const updateQuery = {};
+    for (const key in packageData) {
+      updateQuery[`packages.$.${key}`] = packageData[key];
+    }
+    const prod = await Product_default.findOneAndUpdate(
+      { _id: productId, "packages._id": packageId },
+      { $set: updateQuery },
+      { new: true }
+    );
+    if (!prod) throw new AppError("Product or Package not found", 404);
+    return prod;
+  }
+  async deletePackage(productId, packageId) {
+    const prod = await Product_default.findByIdAndUpdate(
+      productId,
+      { $pull: { packages: { _id: packageId } } },
+      { new: true }
+    );
+    if (!prod) throw new AppError("Product not found", 404);
+    return prod;
+  }
+};
+
+// server/validators/product.validator.ts
+var import_zod5 = require("zod");
+var packageSchema2 = import_zod5.z.object({
+  name: import_zod5.z.string().min(1, "Package name is required"),
+  price: import_zod5.z.number().min(0, "Price must be >= 0"),
+  originalPrice: import_zod5.z.number().optional(),
+  features: import_zod5.z.array(import_zod5.z.string()).optional(),
+  isActive: import_zod5.z.boolean().optional(),
+  productCode: import_zod5.z.string().optional()
 });
-var productRoutes_default = router;
+var createProductSchema = import_zod5.z.object({
+  body: import_zod5.z.object({
+    name: import_zod5.z.string().min(1, "Name is required"),
+    slug: import_zod5.z.string().min(1, "Slug is required"),
+    categoryId: import_zod5.z.string().min(1, "Category ID is required"),
+    description: import_zod5.z.string().optional(),
+    thumbnail: import_zod5.z.string().optional(),
+    images: import_zod5.z.array(import_zod5.z.string()).optional(),
+    isActive: import_zod5.z.boolean().optional(),
+    isFeatured: import_zod5.z.boolean().optional(),
+    isInstant: import_zod5.z.boolean().optional(),
+    packages: import_zod5.z.array(packageSchema2).optional()
+  })
+});
+var updateProductSchema = import_zod5.z.object({
+  body: import_zod5.z.object({
+    name: import_zod5.z.string().min(1).optional(),
+    slug: import_zod5.z.string().min(1).optional(),
+    categoryId: import_zod5.z.string().min(1).optional(),
+    description: import_zod5.z.string().optional(),
+    thumbnail: import_zod5.z.string().optional(),
+    images: import_zod5.z.array(import_zod5.z.string()).optional(),
+    isActive: import_zod5.z.boolean().optional(),
+    isFeatured: import_zod5.z.boolean().optional(),
+    isInstant: import_zod5.z.boolean().optional(),
+    totalSold: import_zod5.z.number().optional()
+  })
+});
+var createPackageSchema = import_zod5.z.object({
+  body: packageSchema2
+});
+var updatePackageSchema = import_zod5.z.object({
+  body: packageSchema2.partial()
+});
+
+// server/routes/product.routes.ts
+var productRepository = new ProductRepository();
+var productService = new ProductService(productRepository);
+var productController = new ProductController(productService);
+var publicProductRoutes = import_express3.default.Router();
+publicProductRoutes.get("/", cacheMiddleware(300), productController.getPublicAll);
+publicProductRoutes.get("/:slug", cacheMiddleware(300), productController.getPublicDetail);
+var adminProductRoutes = import_express3.default.Router();
+adminProductRoutes.get("/products", authenticateAdmin, productController.getAdminAll);
+adminProductRoutes.post("/products", authenticateAdmin, validate(createProductSchema), productController.create);
+adminProductRoutes.put("/products/:id", authenticateAdmin, validate(updateProductSchema), productController.update);
+adminProductRoutes.delete("/products/:id", authenticateAdmin, productController.delete);
+adminProductRoutes.post("/products/:productId/packages", authenticateAdmin, validate(createPackageSchema), productController.addPackage);
+adminProductRoutes.put("/products/:productId/packages/:packageId", authenticateAdmin, validate(updatePackageSchema), productController.updatePackage);
+adminProductRoutes.delete("/products/:productId/packages/:packageId", authenticateAdmin, productController.deletePackage);
 
 // server/routes/orderRoutes.ts
-var import_express2 = __toESM(require("express"));
+var import_express4 = __toESM(require("express"));
 
 // server/models/Order.ts
-var import_mongoose4 = __toESM(require("mongoose"));
-var orderSchema = new import_mongoose4.Schema(
+var import_mongoose5 = __toESM(require("mongoose"));
+var orderSchema = new import_mongoose5.Schema(
   {
     refCode: { type: String, required: true, unique: true },
-    productId: { type: import_mongoose4.Schema.Types.ObjectId, ref: "Product", required: true },
-    packageId: { type: import_mongoose4.Schema.Types.ObjectId, required: true },
-    accountStockId: { type: import_mongoose4.Schema.Types.ObjectId, ref: "AccountStock" },
+    productId: { type: import_mongoose5.Schema.Types.ObjectId, ref: "Product", required: true },
+    packageId: { type: import_mongoose5.Schema.Types.ObjectId, required: true },
+    accountStockId: { type: import_mongoose5.Schema.Types.ObjectId, ref: "AccountStock" },
     buyerName: { type: String, required: true },
     buyerWa: { type: String, required: true },
     buyerEmail: { type: String },
@@ -551,12 +1040,11 @@ var orderSchema = new import_mongoose4.Schema(
 );
 orderSchema.index({ buyerWa: 1 });
 orderSchema.index({ status: 1, createdAt: -1 });
-var Order = import_mongoose4.default.models.Order || import_mongoose4.default.model("Order", orderSchema);
+var Order = import_mongoose5.default.models.Order || import_mongoose5.default.model("Order", orderSchema);
 var Order_default = Order;
 
 // server/routes/orderRoutes.ts
-init_Product();
-var router2 = import_express2.default.Router();
+var router2 = import_express4.default.Router();
 router2.post("/create", async (req, res) => {
   try {
     const { productId, packageId, buyerName, buyerWa, buyerEmail, gameUserId, gameServerId, notes, voucherCode } = req.body;
@@ -609,69 +1097,7 @@ router2.post("/create", async (req, res) => {
 var orderRoutes_default = router2;
 
 // server/routes/adminRoutes.ts
-var import_express3 = __toESM(require("express"));
-
-// server/models/AdminAndOthers.ts
-var import_mongoose5 = __toESM(require("mongoose"));
-var adminSchema = new import_mongoose5.Schema(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    passwordHash: { type: String, required: true }
-  },
-  { timestamps: true }
-);
-var Admin = import_mongoose5.default.models.Admin || import_mongoose5.default.model("Admin", adminSchema);
-var voucherSchema = new import_mongoose5.Schema(
-  {
-    code: { type: String, required: true, unique: true },
-    description: { type: String, required: true },
-    discountType: { type: String, enum: ["PERCENTAGE", "FIXED"], required: true },
-    discountValue: { type: Number, required: true },
-    minPurchase: { type: Number, default: 0 },
-    maxUsage: { type: Number, required: true },
-    usageCount: { type: Number, default: 0 },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
-    isActive: { type: Boolean, default: true }
-  },
-  { timestamps: true }
-);
-var Voucher = import_mongoose5.default.models.Voucher || import_mongoose5.default.model("Voucher", voucherSchema);
-var warrantyTicketSchema = new import_mongoose5.Schema(
-  {
-    refCode: { type: String, required: true, unique: true },
-    orderId: { type: import_mongoose5.Schema.Types.ObjectId, ref: "Order", required: true },
-    buyerName: { type: String, required: true },
-    buyerWa: { type: String, required: true },
-    problem: { type: String, required: true },
-    status: { type: String, enum: ["OPEN", "PROCESSING", "RESOLVED", "REJECTED"], default: "OPEN" },
-    adminResponse: { type: String }
-  },
-  { timestamps: true }
-);
-var WarrantyTicket = import_mongoose5.default.models.WarrantyTicket || import_mongoose5.default.model("WarrantyTicket", warrantyTicketSchema);
-var activityLogSchema = new import_mongoose5.Schema(
-  {
-    adminId: { type: import_mongoose5.Schema.Types.ObjectId, ref: "Admin" },
-    action: { type: String, required: true },
-    details: { type: String },
-    ipAddress: { type: String }
-  },
-  { timestamps: { createdAt: true, updatedAt: false } }
-);
-var ActivityLog = import_mongoose5.default.models.ActivityLog || import_mongoose5.default.model("ActivityLog", activityLogSchema);
-var notificationSchema = new import_mongoose5.Schema(
-  {
-    title: { type: String, required: true },
-    message: { type: String, required: true },
-    type: { type: String, enum: ["ORDER", "TICKET", "SYSTEM", "ALERT", "PAYMENT", "WARRANTY", "STOCK", "REVIEW"], default: "SYSTEM" },
-    isRead: { type: Boolean, default: false },
-    link: { type: String }
-  },
-  { timestamps: { createdAt: true, updatedAt: false } }
-);
-var Notification = import_mongoose5.default.models.Notification || import_mongoose5.default.model("Notification", notificationSchema);
+var import_express5 = __toESM(require("express"));
 
 // server/models/Marketing.ts
 var import_mongoose6 = __toESM(require("mongoose"));
@@ -743,10 +1169,6 @@ var testimonialSchema = new import_mongoose8.Schema(
 );
 testimonialSchema.index({ isActive: 1, sortOrder: 1 });
 var Testimonial = import_mongoose8.default.models.Testimonial || import_mongoose8.default.model("Testimonial", testimonialSchema);
-
-// server/routes/adminRoutes.ts
-var import_crypto = __toESM(require("crypto"));
-init_Product();
 
 // server/models/AccountStock.ts
 var import_mongoose9 = __toESM(require("mongoose"));
@@ -828,45 +1250,7 @@ var accumulateCustomerSpent = async (buyerWa, amount) => {
 };
 
 // server/routes/adminRoutes.ts
-var router3 = import_express3.default.Router();
-var hashPassword = (password) => import_crypto.default.createHash("sha256").update(password).digest("hex");
-var generateAdminToken = (email, passwordHash) => {
-  const secret = process.env.SESSION_SECRET || "my-super-secret-cyberpunk-key";
-  return import_crypto.default.createHash("sha256").update(`${email}:${passwordHash}:${secret}`).digest("hex");
-};
-var authenticateAdmin = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ error: "Unauthorized" });
-    const token = authHeader.split(" ")[1];
-    const admin = await Admin.findOne();
-    if (!admin) return res.status(401).json({ error: "No admin" });
-    if (token !== generateAdminToken(admin.email, admin.passwordHash)) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-    req.admin = admin;
-    next();
-  } catch (error) {
-    res.status(500).json({ error: "Auth failed" });
-  }
-};
-router3.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const admin = await Admin.findOne({ email });
-    if (!admin || admin.passwordHash !== hashPassword(password)) {
-      return res.status(401).json({ error: "Kredensial tidak valid" });
-    }
-    const token = generateAdminToken(admin.email, admin.passwordHash);
-    res.json({ success: true, token, admin: { name: admin.name, email: admin.email } });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.get("/me", authenticateAdmin, (req, res) => {
-  const admin = req.admin;
-  res.json({ authorized: true, admin: { name: admin.name, email: admin.email } });
-});
+var router3 = import_express5.default.Router();
 router3.get("/stats", authenticateAdmin, async (req, res) => {
   try {
     const totalOrders = await Order_default.countDocuments();
@@ -878,125 +1262,6 @@ router3.get("/stats", authenticateAdmin, async (req, res) => {
     const productsCount = await Product_default.countDocuments({ isActive: true });
     const recentOrders = await Order_default.find().sort({ createdAt: -1 }).limit(10);
     res.json({ totalOrders, pendingOrders, confirmedOrders, sentOrders, totalEarning, productsCount, recentOrders, lowStockWarnings: [] });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.get("/categories", authenticateAdmin, async (req, res) => {
-  try {
-    const categories = await Category_default.find().sort({ sortOrder: 1 }).lean();
-    const catsWithCount = await Promise.all(categories.map(async (c) => {
-      const pCount = await Product_default.countDocuments({ categoryId: c._id });
-      return { ...c, id: c._id, _count: { products: pCount } };
-    }));
-    res.json(catsWithCount);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.post("/categories", authenticateAdmin, async (req, res) => {
-  try {
-    const cat = await Category_default.create(req.body);
-    res.json({ success: true, category: cat });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.put("/categories/:id", authenticateAdmin, async (req, res) => {
-  try {
-    const cat = await Category_default.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json({ success: true, category: cat });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.delete("/categories/:id", authenticateAdmin, async (req, res) => {
-  try {
-    await Category_default.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.put("/categories-reorder", authenticateAdmin, async (req, res) => {
-  try {
-    const { orders } = req.body;
-    if (Array.isArray(orders)) {
-      for (const item of orders) {
-        await Category_default.findByIdAndUpdate(item.id, { sortOrder: item.sortOrder });
-      }
-    }
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.get("/products", authenticateAdmin, async (req, res) => {
-  try {
-    const products = await Product_default.find().populate("categoryId").sort({ createdAt: -1 }).lean();
-    res.json(products.map((p) => ({
-      ...p,
-      id: p._id,
-      packages: (p.packages || []).map((pkg) => ({ ...pkg, id: pkg._id }))
-    })));
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.post("/products", authenticateAdmin, async (req, res) => {
-  try {
-    const prod = await Product_default.create({ ...req.body, packages: [] });
-    res.json({ success: true, product: prod });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.put("/products/:id", authenticateAdmin, async (req, res) => {
-  try {
-    const prod = await Product_default.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json({ success: true, product: prod });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.delete("/products/:id", authenticateAdmin, async (req, res) => {
-  try {
-    await Product_default.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.post("/products/:productId/packages", authenticateAdmin, async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const { label, price, originalPrice, warrantyDays, maxDevices } = req.body;
-    const product = await Product_default.findById(productId);
-    if (!product) return res.status(404).json({ error: "Product not found" });
-    product.packages.push({
-      label,
-      price,
-      originalPrice,
-      warrantyDays,
-      maxDevices,
-      durationDays: warrantyDays,
-      // durationDays is required by schema
-      isActive: true
-    });
-    await product.save();
-    res.json({ success: true, packages: product.packages });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router3.delete("/products/:productId/packages/:packageId", authenticateAdmin, async (req, res) => {
-  try {
-    const p = await Product_default.findById(req.params.productId);
-    if (p) {
-      p.packages = p.packages.filter((pkg) => pkg._id?.toString() !== req.params.packageId);
-      await p.save();
-      res.json(p.packages);
-    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1493,36 +1758,11 @@ router3.put("/notifications/read-all", authenticateAdmin, async (req, res) => {
 });
 var adminRoutes_default = router3;
 
-// server/routes/categoryRoutes.ts
-var import_express4 = __toESM(require("express"));
-init_Product();
-var router4 = import_express4.default.Router();
-router4.get("/", async (req, res) => {
-  try {
-    const categories = await Category_default.find().sort({ sortOrder: 1 }).lean();
-    const categoriesWithCount = await Promise.all(
-      categories.map(async (cat) => {
-        const productCount = await Product_default.countDocuments({ categoryId: cat._id });
-        return {
-          ...cat,
-          id: cat._id,
-          _count: { products: productCount }
-        };
-      })
-    );
-    res.json(categoriesWithCount);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-var categoryRoutes_default = router4;
-
 // server/routes/publicRoutes.ts
-var import_express5 = __toESM(require("express"));
+var import_express6 = __toESM(require("express"));
 init_Settings();
-init_Product();
-var router5 = import_express5.default.Router();
-router5.get("/site-content", async (req, res) => {
+var router4 = import_express6.default.Router();
+router4.get("/site-content", async (req, res) => {
   try {
     const items = await SiteContent.find().lean();
     res.json(items.map((i) => ({ id: i._id, key: i.key, value: i.value, type: i.type })));
@@ -1530,7 +1770,7 @@ router5.get("/site-content", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router5.get("/faqs", async (req, res) => {
+router4.get("/faqs", async (req, res) => {
   try {
     const faqs = await FaqItem.find({ isActive: true }).sort({ sortOrder: 1 }).lean();
     res.json(faqs.map((f) => ({ id: f._id, ...f })));
@@ -1538,7 +1778,7 @@ router5.get("/faqs", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router5.get("/testimonials", async (req, res) => {
+router4.get("/testimonials", async (req, res) => {
   try {
     const testi = await Testimonial.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 }).lean();
     res.json(testi.map((t) => ({ id: t._id, ...t })));
@@ -1546,7 +1786,7 @@ router5.get("/testimonials", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router5.get("/flash-sales", async (req, res) => {
+router4.get("/flash-sales", async (req, res) => {
   try {
     const items = await FlashSaleItem.find({ isActive: true }).lean();
     const enriched = await Promise.all(items.map(async (item) => {
@@ -1559,10 +1799,10 @@ router5.get("/flash-sales", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router5.post("/checkout", async (req, res) => {
+router4.post("/checkout", async (req, res) => {
   res.status(301).json({ message: "Use /api/orders/create" });
 });
-router5.get("/banners", async (req, res) => {
+router4.get("/banners", async (req, res) => {
   try {
     const now = /* @__PURE__ */ new Date();
     const banners = await Banner.find({
@@ -1575,7 +1815,7 @@ router5.get("/banners", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router5.post("/warranty", async (req, res) => {
+router4.post("/warranty", async (req, res) => {
   try {
     const { orderRefCode, buyerName, buyerWa, problem } = req.body;
     if (!orderRefCode || !buyerName || !buyerWa || !problem) {
@@ -1603,7 +1843,7 @@ router5.post("/warranty", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router5.post("/support", async (req, res) => {
+router4.post("/support", async (req, res) => {
   try {
     const { buyerName, buyerWa, subject, message } = req.body;
     if (!buyerName || !buyerWa || !subject || !message) {
@@ -1629,10 +1869,10 @@ router5.post("/support", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-var publicRoutes_default = router5;
+var publicRoutes_default = router4;
 
 // server/routes/paymentRoutes.ts
-var import_express7 = __toESM(require("express"));
+var import_express8 = __toESM(require("express"));
 var import_midtrans_client2 = __toESM(require("midtrans-client"));
 
 // server/models/Payment.ts
@@ -1657,13 +1897,37 @@ var paymentSchema = new import_mongoose11.Schema(
 );
 var Payment = import_mongoose11.default.models.Payment || import_mongoose11.default.model("Payment", paymentSchema);
 
+// server/models/TopupOrder.ts
+var import_mongoose12 = __toESM(require("mongoose"));
+var topupOrderSchema = new import_mongoose12.default.Schema({
+  invoice: { type: String, required: true, unique: true },
+  customerId: { type: import_mongoose12.default.Schema.Types.ObjectId, ref: "Customer" },
+  // Optional reference
+  customerName: { type: String, required: true },
+  customerWa: { type: String, required: true },
+  customerEmail: { type: String },
+  gameId: { type: import_mongoose12.default.Schema.Types.ObjectId, ref: "Game", required: true },
+  productId: { type: import_mongoose12.default.Schema.Types.ObjectId, ref: "GameProduct", required: true },
+  accountData: { type: import_mongoose12.default.Schema.Types.Mixed, required: true },
+  // Store dynamic fields JSON
+  paymentMethod: { type: String, required: true },
+  // e.g., 'MIDTRANS'
+  amount: { type: Number, required: true },
+  status: { type: String, enum: ["PENDING", "PAID", "PROCESSING", "SUCCESS", "FAILED"], default: "PENDING" },
+  digiflazzResponse: { type: import_mongoose12.default.Schema.Types.Mixed }
+  // Store API response
+}, { timestamps: true });
+topupOrderSchema.index({ customerWa: 1 });
+topupOrderSchema.index({ status: 1, createdAt: -1 });
+var TopupOrder = import_mongoose12.default.models.TopupOrder || import_mongoose12.default.model("TopupOrder", topupOrderSchema);
+var TopupOrder_default = TopupOrder;
+
 // server/routes/paymentRoutes.ts
-init_Product();
 var import_crypto4 = __toESM(require("crypto"));
 
 // server/models/WebhookLog.ts
-var import_mongoose12 = __toESM(require("mongoose"));
-var webhookLogSchema = new import_mongoose12.Schema(
+var import_mongoose13 = __toESM(require("mongoose"));
+var webhookLogSchema = new import_mongoose13.Schema(
   {
     orderId: { type: String, required: true, index: true },
     transactionStatus: { type: String, required: true },
@@ -1677,16 +1941,16 @@ var webhookLogSchema = new import_mongoose12.Schema(
 );
 webhookLogSchema.index({ createdAt: -1 });
 webhookLogSchema.index({ transactionStatus: 1 });
-var WebhookLog = import_mongoose12.default.models.WebhookLog || import_mongoose12.default.model("WebhookLog", webhookLogSchema);
+var WebhookLog = import_mongoose13.default.models.WebhookLog || import_mongoose13.default.model("WebhookLog", webhookLogSchema);
 
 // server/routes/paymentSettingsRoutes.ts
-var import_express6 = __toESM(require("express"));
+var import_express7 = __toESM(require("express"));
 var import_crypto_js = __toESM(require("crypto-js"));
 var import_midtrans_client = __toESM(require("midtrans-client"));
 
 // server/models/PaymentSetting.ts
-var import_mongoose13 = __toESM(require("mongoose"));
-var paymentSettingSchema = new import_mongoose13.Schema(
+var import_mongoose14 = __toESM(require("mongoose"));
+var paymentSettingSchema = new import_mongoose14.Schema(
   {
     serverKey: { type: String, required: true },
     clientKey: { type: String, required: true },
@@ -1702,11 +1966,11 @@ var paymentSettingSchema = new import_mongoose13.Schema(
   },
   { timestamps: true }
 );
-var PaymentSetting = import_mongoose13.default.models.PaymentSetting || import_mongoose13.default.model("PaymentSetting", paymentSettingSchema);
+var PaymentSetting = import_mongoose14.default.models.PaymentSetting || import_mongoose14.default.model("PaymentSetting", paymentSettingSchema);
 
 // server/models/ActivityLog.ts
-var import_mongoose14 = __toESM(require("mongoose"));
-var activityLogSchema2 = new import_mongoose14.Schema(
+var import_mongoose15 = __toESM(require("mongoose"));
+var activityLogSchema2 = new import_mongoose15.Schema(
   {
     adminId: { type: String, default: "SYSTEM" },
     action: { type: String, required: true },
@@ -1717,8 +1981,8 @@ var activityLogSchema2 = new import_mongoose14.Schema(
   { timestamps: true }
 );
 activityLogSchema2.index({ createdAt: -1 });
-var ActivityLog2 = import_mongoose14.default.models.ActivityLog || import_mongoose14.default.model("ActivityLog", activityLogSchema2);
-var notificationSchema2 = new import_mongoose14.Schema(
+var ActivityLog2 = import_mongoose15.default.models.ActivityLog || import_mongoose15.default.model("ActivityLog", activityLogSchema2);
+var notificationSchema2 = new import_mongoose15.Schema(
   {
     title: { type: String, required: true },
     message: { type: String, required: true },
@@ -1728,10 +1992,10 @@ var notificationSchema2 = new import_mongoose14.Schema(
   { timestamps: true }
 );
 notificationSchema2.index({ isRead: 1, createdAt: -1 });
-var Notification2 = import_mongoose14.default.models.Notification || import_mongoose14.default.model("Notification", notificationSchema2);
+var Notification2 = import_mongoose15.default.models.Notification || import_mongoose15.default.model("Notification", notificationSchema2);
 
 // server/routes/paymentSettingsRoutes.ts
-var router6 = import_express6.default.Router();
+var router5 = import_express7.default.Router();
 var ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "piloneko-secure-key-32chars-!!!!";
 var encryptKey = (text) => {
   return import_crypto_js.default.AES.encrypt(text, ENCRYPTION_KEY).toString();
@@ -1740,7 +2004,7 @@ var decryptKey = (ciphertext) => {
   const bytes = import_crypto_js.default.AES.decrypt(ciphertext, ENCRYPTION_KEY);
   return bytes.toString(import_crypto_js.default.enc.Utf8);
 };
-router6.get("/", authenticateAdmin, async (req, res) => {
+router5.get("/", authenticateAdmin, async (req, res) => {
   try {
     const setting = await PaymentSetting.findOne().lean();
     if (!setting) {
@@ -1757,7 +2021,7 @@ router6.get("/", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router6.put("/", authenticateAdmin, async (req, res) => {
+router5.put("/", authenticateAdmin, async (req, res) => {
   try {
     const { serverKey, clientKey, merchantId, isProduction, isActive } = req.body;
     if (!serverKey || !clientKey) {
@@ -1799,7 +2063,7 @@ router6.put("/", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router6.post("/test", authenticateAdmin, async (_req, res) => {
+router5.post("/test", authenticateAdmin, async (_req, res) => {
   try {
     const setting = await PaymentSetting.findOne();
     if (!setting) {
@@ -1850,7 +2114,7 @@ router6.post("/test", authenticateAdmin, async (_req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router6.get("/status", authenticateAdmin, async (_req, res) => {
+router5.get("/status", authenticateAdmin, async (_req, res) => {
   try {
     const setting = await PaymentSetting.findOne().lean();
     if (!setting) {
@@ -1871,7 +2135,10 @@ router6.get("/status", authenticateAdmin, async (_req, res) => {
 var getMidtransConfig = async () => {
   try {
     const setting = await PaymentSetting.findOne();
-    if (setting && setting.isActive) {
+    if (setting) {
+      if (!setting.isActive) {
+        return { serverKey: "", clientKey: "", isProduction: false, fromDb: true };
+      }
       return {
         serverKey: decryptKey(setting.serverKey),
         clientKey: setting.clientKey,
@@ -1888,13 +2155,24 @@ var getMidtransConfig = async () => {
     fromDb: false
   };
 };
-var paymentSettingsRoutes_default = router6;
+var paymentSettingsRoutes_default = router5;
+
+// server/models/DigiflazzSetting.ts
+var import_mongoose16 = __toESM(require("mongoose"));
+var digiflazzSettingSchema = new import_mongoose16.default.Schema({
+  username: { type: String, default: "" },
+  apiKey: { type: String, default: "" },
+  webhookSecret: { type: String, default: "" },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+var DigiflazzSetting = import_mongoose16.default.models.DigiflazzSetting || import_mongoose16.default.model("DigiflazzSetting", digiflazzSettingSchema);
+var DigiflazzSetting_default = DigiflazzSetting;
 
 // server/routes/paymentRoutes.ts
 var import_express_rate_limit = __toESM(require("express-rate-limit"));
 
 // server/validators/apiValidators.ts
-var import_zod = require("zod");
+var import_zod6 = require("zod");
 
 // server/utils/responseHelper.ts
 var sendError = (res, message = "Error", statusCode = 500, error = {}) => {
@@ -1906,40 +2184,131 @@ var sendError = (res, message = "Error", statusCode = 500, error = {}) => {
 };
 
 // server/validators/apiValidators.ts
-var validate = (schema) => {
+var validate2 = (schema) => {
   return (req, res, next) => {
     try {
       schema.parse(req.body);
       next();
     } catch (error) {
-      if (error instanceof import_zod.z.ZodError) {
+      if (error instanceof import_zod6.z.ZodError) {
         return sendError(res, "Validasi gagal", 400, error.errors);
       }
       return sendError(res, "Terjadi kesalahan", 500, error);
     }
   };
 };
-var loginSchema = import_zod.z.object({
-  email: import_zod.z.string().email({ message: "Format email tidak valid" }),
-  password: import_zod.z.string().min(6, { message: "Password minimal 6 karakter" })
+var loginSchema2 = import_zod6.z.object({
+  email: import_zod6.z.string().email({ message: "Format email tidak valid" }),
+  password: import_zod6.z.string().min(6, { message: "Password minimal 6 karakter" })
 });
-var checkoutSchema = import_zod.z.object({
-  productId: import_zod.z.string().min(1, "ID Produk wajib diisi"),
-  packageId: import_zod.z.string().min(1, "ID Paket wajib diisi"),
-  buyerName: import_zod.z.string().min(2, "Nama pembeli minimal 2 karakter"),
-  buyerWa: import_zod.z.string().min(9, "Nomor WhatsApp tidak valid"),
-  buyerEmail: import_zod.z.string().email("Email tidak valid").optional().or(import_zod.z.literal("")),
-  gameUserId: import_zod.z.string().optional(),
-  gameServerId: import_zod.z.string().optional(),
-  notes: import_zod.z.string().optional(),
-  voucherCode: import_zod.z.string().optional()
+var checkoutSchema = import_zod6.z.object({
+  productId: import_zod6.z.string().min(1, "ID Produk wajib diisi"),
+  packageId: import_zod6.z.string().min(1, "ID Paket wajib diisi"),
+  buyerName: import_zod6.z.string().min(2, "Nama pembeli minimal 2 karakter"),
+  buyerWa: import_zod6.z.string().min(9, "Nomor WhatsApp tidak valid"),
+  buyerEmail: import_zod6.z.string().email("Email tidak valid").optional().or(import_zod6.z.literal("")),
+  gameUserId: import_zod6.z.string().optional(),
+  gameServerId: import_zod6.z.string().optional(),
+  notes: import_zod6.z.string().optional(),
+  voucherCode: import_zod6.z.string().optional()
 });
 
 // server/routes/paymentRoutes.ts
 init_whatsappService();
 
+// server/services/digiflazzService.ts
+var import_crypto3 = __toESM(require("crypto"));
+var import_undici = require("undici");
+var DIGIFLAZZ_BASE_URL = "https://api.digiflazz.com/v1";
+var getFetchOptions = (payload) => {
+  const options = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  };
+  if (process.env.FIXIE_URL) {
+    options.dispatcher = new import_undici.ProxyAgent(process.env.FIXIE_URL);
+  }
+  return options;
+};
+var DigiflazzService = class {
+  static async getSettings() {
+    let settings = await DigiflazzSetting_default.findOne();
+    if (!settings) {
+      settings = await DigiflazzSetting_default.create({});
+    }
+    return settings;
+  }
+  static generateSign(username, apiKey, refId) {
+    const rawString = username + apiKey + refId;
+    return import_crypto3.default.createHash("md5").update(rawString).digest("hex");
+  }
+  static async getPrepaidProducts() {
+    const settings = await this.getSettings();
+    if (!settings.username || !settings.apiKey) {
+      throw new Error("Digiflazz credentials not configured");
+    }
+    const sign = this.generateSign(settings.username, settings.apiKey, "depo");
+    const payload = {
+      cmd: "prepaid",
+      username: settings.username,
+      sign
+    };
+    const response = await fetch(`${DIGIFLAZZ_BASE_URL}/price-list`, getFetchOptions(payload));
+    const data = await response.json();
+    if (!response.ok || !data.data) {
+      throw new Error(data.message || "Failed to fetch price list from Digiflazz");
+    }
+    if (!Array.isArray(data.data)) {
+      throw new Error(data.data.message || JSON.stringify(data.data));
+    }
+    return data.data;
+  }
+  static async createTransaction(sku, customerNo, refId) {
+    const settings = await this.getSettings();
+    if (!settings.username || !settings.apiKey) {
+      throw new Error("Digiflazz credentials not configured");
+    }
+    const sign = this.generateSign(settings.username, settings.apiKey, refId);
+    const payload = {
+      username: settings.username,
+      buyer_sku_code: sku,
+      customer_no: customerNo,
+      ref_id: refId,
+      sign,
+      cb_url: ""
+    };
+    const response = await fetch(`${DIGIFLAZZ_BASE_URL}/transaction`, getFetchOptions(payload));
+    const data = await response.json();
+    if (!response.ok) {
+      if (data && data.data) return data.data;
+      throw new Error(data.message || "Failed to create transaction");
+    }
+    return data.data;
+  }
+  static async checkBalance() {
+    const settings = await this.getSettings();
+    if (!settings.username || !settings.apiKey) {
+      throw new Error("Digiflazz credentials not configured");
+    }
+    const sign = this.generateSign(settings.username, settings.apiKey, "depo");
+    const payload = {
+      cmd: "deposit",
+      username: settings.username,
+      sign
+    };
+    const response = await fetch(`${DIGIFLAZZ_BASE_URL}/cek-saldo`, getFetchOptions(payload));
+    const data = await response.json();
+    return data.data;
+  }
+};
+
 // server/services/paymentLogicService.ts
 var processMidtransStatus = async (orderId, transactionStatus, fraudStatus) => {
+  const isTopup = orderId.startsWith("TP-");
+  if (isTopup) {
+    return processTopupMidtransStatus(orderId, transactionStatus, fraudStatus);
+  }
   const payment = await Payment.findOne({ orderId });
   const order = await Order_default.findOne({ refCode: orderId });
   if (!payment || !order) return null;
@@ -1967,37 +2336,6 @@ var processMidtransStatus = async (orderId, transactionStatus, fraudStatus) => {
       type: "ORDER",
       isRead: false
     });
-    let isAutoTopup = false;
-    let topupSuccess = false;
-    try {
-      const Product2 = (await Promise.resolve().then(() => (init_Product(), Product_exports))).default;
-      const product = await Product2.findById(order.productId);
-      if (product) {
-        const pkg = product.packages.find((p) => p._id.toString() === order.packageId.toString());
-        if (pkg && pkg.digiflazzSkuCode) {
-          isAutoTopup = true;
-          let targetId = order.gameUserId || order.buyerWa;
-          if (order.gameUserId && order.gameServerId) {
-            targetId = order.gameUserId + order.gameServerId;
-          }
-          const { topUp: topUp2 } = await Promise.resolve().then(() => (init_digiflazzService(), digiflazzService_exports));
-          const topupRes = await topUp2(pkg.digiflazzSkuCode, targetId, orderId);
-          if (topupRes && (topupRes.status === "Sukses" || topupRes.status === "Pending")) {
-            topupSuccess = true;
-            order.status = topupRes.status === "Sukses" ? "SENT" : "CONFIRMED";
-            order.adminNote = `Top-up otomatis Digiflazz ${topupRes.status}: SN ${topupRes.sn || "-"}`;
-            await order.save();
-          } else {
-            order.adminNote = `Top-up otomatis Digiflazz Gagal: ${topupRes?.message || "Unknown Error"}`;
-            await order.save();
-          }
-        }
-      }
-    } catch (digiErr) {
-      console.error("[DIGIFLAZZ] Topup Error:", digiErr.message);
-      order.adminNote = `Top-up otomatis Digiflazz Error: ${digiErr.message}`;
-      await order.save();
-    }
     try {
       const { getWhatsAppSettings: getWhatsAppSettings2, sendWhatsAppMessage: sendWhatsAppMessage2 } = await Promise.resolve().then(() => (init_whatsappService(), whatsappService_exports));
       const waSettings = await getWhatsAppSettings2();
@@ -2031,17 +2369,6 @@ _Notifikasi otomatis dari sistem PILONEKO_`;
         }
         const buyerPhone = order.buyerWa;
         if (buyerPhone) {
-          let statusText = "Sedang Diproses Admin \u{1F504}";
-          let closingText = "Admin kami akan segera mengirimkan akun Anda melalui WhatsApp ini.\nMohon tunggu sebentar ya! \u{1F60A}";
-          if (isAutoTopup) {
-            if (topupSuccess) {
-              statusText = order.status === "SENT" ? "Top Up Berhasil Masuk \u2705" : "Top Up Sedang Diproses Sistem \u{1F504}";
-              closingText = "Pesanan Top Up Anda sedang diproses otomatis oleh sistem kami.\nSilakan cek ke dalam game Anda beberapa saat lagi! \u{1F3AE}";
-            } else {
-              statusText = "Butuh Bantuan Admin \u26A0\uFE0F";
-              closingText = "Sistem gagal mengirim pesanan secara otomatis.\nJangan khawatir, admin kami akan segera mengecek dan memprosesnya secara manual! \u{1F64F}";
-            }
-          }
           const buyerMessage = `\u2705 *Pembayaran Berhasil - PILONEKO*
 
 Halo ${order.buyerName},
@@ -2052,9 +2379,10 @@ Pembayaran Anda telah dikonfirmasi!
 \u{1F4E6} *Produk:* ${order.productName}
 \u{1F381} *Paket:* ${order.packageName}
 \u{1F4B0} *Total:* Rp ${order.price.toLocaleString("id-ID")}
-\u{1F4CA} *Status:* ${statusText}
+\u{1F4CA} *Status:* Sedang Diproses Admin \u{1F504}
 
-${closingText}
+Admin kami akan segera mengirimkan akun Anda melalui WhatsApp ini.
+Mohon tunggu sebentar ya! \u{1F60A}
 
 Terima kasih telah berbelanja di PILONEKO! \u{1F64F}`;
           await sendWhatsAppMessage2(buyerPhone, buyerMessage);
@@ -2081,9 +2409,66 @@ Terima kasih telah berbelanja di PILONEKO! \u{1F64F}`;
   await order.save();
   return { payment, order };
 };
+var processTopupMidtransStatus = async (orderId, transactionStatus, fraudStatus) => {
+  const payment = await Payment.findOne({ orderId });
+  const topupOrder = await TopupOrder_default.findOne({ invoice: orderId }).populate("productId");
+  if (!payment || !topupOrder) return null;
+  if (["success", "settlement", "capture"].includes(payment.transactionStatus || "")) {
+    return { payment, order: topupOrder };
+  }
+  let newStatus = transactionStatus;
+  if (transactionStatus === "capture") {
+    newStatus = fraudStatus === "accept" ? "success" : "challenge";
+  } else if (transactionStatus === "settlement") {
+    newStatus = "settlement";
+  } else if (["cancel", "deny", "expire"].includes(transactionStatus)) {
+    newStatus = "failed";
+  }
+  payment.transactionStatus = transactionStatus;
+  await payment.save();
+  if (newStatus === "success" || newStatus === "settlement") {
+    topupOrder.status = "PAID";
+    await topupOrder.save();
+    try {
+      const product = topupOrder.productId;
+      if (!product || !product.buyerSkuCode) {
+        throw new Error("Product SKU code not found");
+      }
+      let customerNo = "";
+      if (topupOrder.accountData) {
+        const values = Object.values(topupOrder.accountData);
+        customerNo = values.join("");
+      }
+      topupOrder.status = "PROCESSING";
+      await topupOrder.save();
+      const digiRes = await DigiflazzService.createTransaction(product.buyerSkuCode, customerNo, orderId);
+      topupOrder.digiflazzResponse = digiRes;
+      if (digiRes.status === "Sukses") {
+        topupOrder.status = "SUCCESS";
+      } else if (digiRes.status === "Gagal") {
+        topupOrder.status = "FAILED";
+      }
+      await topupOrder.save();
+    } catch (err) {
+      topupOrder.status = "FAILED";
+      topupOrder.digiflazzResponse = { error: err.message };
+      await topupOrder.save();
+    }
+    await Notification.create({
+      title: `\u{1F4B0} Topup Lunas: ${orderId}`,
+      message: `Topup ${orderId} dari ${topupOrder.customerName}. Status Digiflazz: ${topupOrder.status}`,
+      type: "ORDER",
+      isRead: false
+    });
+  } else if (newStatus === "failed") {
+    topupOrder.status = "FAILED";
+    await topupOrder.save();
+  }
+  return { payment, order: topupOrder };
+};
 
 // server/routes/paymentRoutes.ts
-var router7 = import_express7.default.Router();
+var router6 = import_express8.default.Router();
 var paymentRateLimit = (0, import_express_rate_limit.default)({
   windowMs: 5 * 60 * 1e3,
   max: 15,
@@ -2092,19 +2477,21 @@ var paymentRateLimit = (0, import_express_rate_limit.default)({
   legacyHeaders: false
 });
 var generateOrderId = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 9e3 + 1e3)}`;
-router7.get("/config", async (_req, res) => {
+router6.get("/config", async (_req, res) => {
   try {
     const config = await getMidtransConfig();
+    const digiSetting = await DigiflazzSetting_default.findOne().lean();
     res.json({
       clientKey: config.clientKey,
       isProduction: config.isProduction,
-      isActive: config.serverKey ? true : false
+      isActive: config.serverKey ? true : false,
+      digiflazzActive: digiSetting ? digiSetting.isActive !== false : true
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-router7.post("/create-transaction", paymentRateLimit, validate(checkoutSchema), async (req, res) => {
+router6.post("/create-transaction", paymentRateLimit, validate2(checkoutSchema), async (req, res) => {
   try {
     const { productId, packageId, buyerName, buyerWa, buyerEmail, gameUserId, gameServerId, notes, voucherCode, paymentMethod } = req.body;
     const config = await getMidtransConfig();
@@ -2243,7 +2630,7 @@ Berikut saya lampirkan bukti transfer pembayaran saya. Mohon segera diproses ya 
     res.status(500).json({ error: error.message || "Terjadi kesalahan sistem" });
   }
 });
-router7.post("/notification", async (req, res) => {
+router6.post("/notification", async (req, res) => {
   const notificationJson = req.body;
   const {
     order_id,
@@ -2286,12 +2673,16 @@ router7.post("/notification", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router7.get("/status/:orderId", async (req, res) => {
+router6.get("/status/:orderId", async (req, res) => {
   try {
     const { orderId } = req.params;
     let payment = await Payment.findOne({ orderId });
     let order = await Order_default.findOne({ refCode: orderId });
-    if (!payment || !order) {
+    let topupOrder = null;
+    if (!order) {
+      topupOrder = await TopupOrder_default.findOne({ invoice: orderId });
+    }
+    if (!payment || !order && !topupOrder) {
       return res.status(404).json({ error: "Transaksi tidak ditemukan" });
     }
     if (payment.transactionStatus === "pending" && payment.snapToken) {
@@ -2308,7 +2699,8 @@ router7.get("/status/:orderId", async (req, res) => {
             const synced = await processMidtransStatus(orderId, midtransStatus.transaction_status, midtransStatus.fraud_status);
             if (synced) {
               payment = synced.payment;
-              order = synced.order;
+              if (order) order = synced.order;
+              else topupOrder = synced.order;
             }
           }
         }
@@ -2321,10 +2713,10 @@ router7.get("/status/:orderId", async (req, res) => {
       orderId: payment.orderId,
       productName: payment.productName,
       amount: payment.amount,
-      buyerName: order.buyerName,
+      buyerName: order ? order.buyerName : topupOrder.customerName,
       buyerWa: payment.buyerWa,
       transactionStatus: payment.transactionStatus,
-      orderStatus: order.status,
+      orderStatus: order ? order.status : topupOrder.status,
       createdAt: payment.createdAt,
       snapToken: payment.snapToken
     });
@@ -2332,7 +2724,7 @@ router7.get("/status/:orderId", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router7.get("/stats/today", async (_req, res) => {
+router6.get("/stats/today", async (_req, res) => {
   try {
     const todayStart = /* @__PURE__ */ new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -2366,13 +2758,12 @@ router7.get("/stats/today", async (_req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-var paymentRoutes_default = router7;
+var paymentRoutes_default = router6;
 
 // server/routes/stockRoutes.ts
-var import_express8 = __toESM(require("express"));
-init_Product();
-var router8 = import_express8.default.Router();
-router8.get("/", authenticateAdmin, async (req, res) => {
+var import_express9 = __toESM(require("express"));
+var router7 = import_express9.default.Router();
+router7.get("/", authenticateAdmin, async (req, res) => {
   try {
     const stocks = await AccountStock_default.find({}).sort({ createdAt: -1 }).lean();
     const products = await Product_default.find({}).lean();
@@ -2401,7 +2792,7 @@ router8.get("/", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router8.get("/:packageId", authenticateAdmin, async (req, res) => {
+router7.get("/:packageId", authenticateAdmin, async (req, res) => {
   try {
     const { packageId } = req.params;
     const stocks = await AccountStock_default.find({ packageId }).sort({ soldAt: -1 }).lean();
@@ -2420,7 +2811,7 @@ router8.get("/:packageId", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router8.post("/", authenticateAdmin, async (req, res) => {
+router7.post("/", authenticateAdmin, async (req, res) => {
   try {
     const { packageId, usernames, password } = req.body;
     if (!packageId || !usernames || !Array.isArray(usernames) || !password) {
@@ -2443,7 +2834,7 @@ router8.post("/", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router8.delete("/:id", authenticateAdmin, async (req, res) => {
+router7.delete("/:id", authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const stock = await AccountStock_default.findByIdAndDelete(id);
@@ -2459,12 +2850,12 @@ router8.delete("/:id", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-var stockRoutes_default = router8;
+var stockRoutes_default = router7;
 
 // server/routes/webhookLogRoutes.ts
-var import_express9 = __toESM(require("express"));
-var router9 = import_express9.default.Router();
-router9.get("/", authenticateAdmin, async (req, res) => {
+var import_express10 = __toESM(require("express"));
+var router8 = import_express10.default.Router();
+router8.get("/", authenticateAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 30;
@@ -2485,7 +2876,7 @@ router9.get("/", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router9.get("/:id", authenticateAdmin, async (req, res) => {
+router8.get("/:id", authenticateAdmin, async (req, res) => {
   try {
     const log = await WebhookLog.findById(req.params.id).lean();
     if (!log) return res.status(404).json({ error: "Log tidak ditemukan" });
@@ -2494,7 +2885,7 @@ router9.get("/:id", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router9.delete("/cleanup", authenticateAdmin, async (_req, res) => {
+router8.delete("/cleanup", authenticateAdmin, async (_req, res) => {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1e3);
     const result = await WebhookLog.deleteMany({ createdAt: { $lt: thirtyDaysAgo } });
@@ -2503,14 +2894,14 @@ router9.delete("/cleanup", authenticateAdmin, async (_req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-var webhookLogRoutes_default = router9;
+var webhookLogRoutes_default = router8;
 
 // server/routes/whatsappRoutes.ts
-var import_express10 = __toESM(require("express"));
+var import_express11 = __toESM(require("express"));
 init_WhatsApp();
 init_whatsappService();
-var router10 = import_express10.default.Router();
-router10.get("/settings", authenticateAdmin, async (req, res) => {
+var router9 = import_express11.default.Router();
+router9.get("/settings", authenticateAdmin, async (req, res) => {
   try {
     const settings = await getWhatsAppSettings();
     const isTokenSet = !!settings.fonteToken;
@@ -2522,7 +2913,7 @@ router10.get("/settings", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.put("/settings", authenticateAdmin, async (req, res) => {
+router9.put("/settings", authenticateAdmin, async (req, res) => {
   try {
     const {
       whatsappNumber,
@@ -2564,7 +2955,7 @@ router10.put("/settings", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.post("/test-connection", authenticateAdmin, async (req, res) => {
+router9.post("/test-connection", authenticateAdmin, async (req, res) => {
   try {
     const { fonteToken } = req.body;
     let encrypted = "";
@@ -2588,7 +2979,7 @@ router10.post("/test-connection", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.post("/send-test", authenticateAdmin, async (req, res) => {
+router9.post("/send-test", authenticateAdmin, async (req, res) => {
   try {
     const { targetPhone, message } = req.body;
     if (!targetPhone || !targetPhone.trim()) {
@@ -2612,7 +3003,7 @@ router10.post("/send-test", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.get("/logs", authenticateAdmin, async (req, res) => {
+router9.get("/logs", authenticateAdmin, async (req, res) => {
   try {
     const logs = await WhatsAppLog.find().sort({ createdAt: -1 }).limit(100).lean();
     res.json(logs.map((l) => ({ id: l._id, ...l })));
@@ -2620,7 +3011,7 @@ router10.get("/logs", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.get("/dashboard-metrics", authenticateAdmin, async (req, res) => {
+router9.get("/dashboard-metrics", authenticateAdmin, async (req, res) => {
   try {
     const today = /* @__PURE__ */ new Date();
     today.setHours(0, 0, 0, 0);
@@ -2646,7 +3037,7 @@ router10.get("/dashboard-metrics", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.get("/campaigns", authenticateAdmin, async (req, res) => {
+router9.get("/campaigns", authenticateAdmin, async (req, res) => {
   try {
     const campaigns = await WhatsAppCampaign.find().sort({ createdAt: -1 }).lean();
     res.json(campaigns.map((c) => ({ id: c._id, ...c })));
@@ -2654,7 +3045,7 @@ router10.get("/campaigns", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.post("/campaigns", authenticateAdmin, async (req, res) => {
+router9.post("/campaigns", authenticateAdmin, async (req, res) => {
   try {
     const campaign = await WhatsAppCampaign.create(req.body);
     res.json({ success: true, campaign });
@@ -2662,7 +3053,7 @@ router10.post("/campaigns", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router10.post("/campaigns/:id/send", authenticateAdmin, async (req, res) => {
+router9.post("/campaigns/:id/send", authenticateAdmin, async (req, res) => {
   try {
     const campaign = await WhatsAppCampaign.findById(req.params.id);
     if (!campaign) return res.status(404).json({ error: "Campaign not found" });
@@ -2692,12 +3083,12 @@ router10.post("/campaigns/:id/send", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-var whatsappRoutes_default = router10;
+var whatsappRoutes_default = router9;
 
 // server/routes/customerRoutes.ts
-var import_express11 = __toESM(require("express"));
-var router11 = import_express11.default.Router();
-router11.get("/", authenticateAdmin, async (req, res) => {
+var import_express12 = __toESM(require("express"));
+var router10 = import_express12.default.Router();
+router10.get("/", authenticateAdmin, async (req, res) => {
   try {
     const customers = await Customer_default.find().sort({ lastOrderDate: -1 });
     res.json(customers);
@@ -2705,7 +3096,7 @@ router11.get("/", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router11.get("/stats", authenticateAdmin, async (req, res) => {
+router10.get("/stats", authenticateAdmin, async (req, res) => {
   try {
     const totalCustomers = await Customer_default.countDocuments();
     const now = /* @__PURE__ */ new Date();
@@ -2723,7 +3114,7 @@ router11.get("/stats", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router11.delete("/:id", authenticateAdmin, async (req, res) => {
+router10.delete("/:id", authenticateAdmin, async (req, res) => {
   try {
     await Customer_default.findByIdAndDelete(req.params.id);
     res.json({ success: true });
@@ -2731,13 +3122,13 @@ router11.delete("/:id", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-var customerRoutes_default = router11;
+var customerRoutes_default = router10;
 
 // server/routes/uploadRoutes.ts
-var import_express12 = __toESM(require("express"));
+var import_express13 = __toESM(require("express"));
 var import_multer = __toESM(require("multer"));
 var import_supabase_js = require("@supabase/supabase-js");
-var router12 = import_express12.default.Router();
+var router11 = import_express13.default.Router();
 var BUCKET_NAME = "piloneko-uploads";
 function getSupabaseClient() {
   const supabaseUrl = process.env.SUPABASE_URL || "";
@@ -2762,7 +3153,7 @@ var upload = (0, import_multer.default)({
   limits: { fileSize: 5 * 1024 * 1024 }
   // max 5MB
 });
-router12.post("/", authenticateAdmin, upload.single("file"), async (req, res) => {
+router11.post("/", authenticateAdmin, upload.single("file"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "Tidak ada file yang diupload." });
@@ -2792,7 +3183,7 @@ router12.post("/", authenticateAdmin, upload.single("file"), async (req, res) =>
     res.status(500).json({ error: err.message });
   }
 });
-router12.delete("/:filename", authenticateAdmin, async (req, res) => {
+router11.delete("/:filename", authenticateAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseClient();
     if (!supabase) {
@@ -2809,102 +3200,579 @@ router12.delete("/:filename", authenticateAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-var uploadRoutes_default = router12;
+var uploadRoutes_default = router11;
 
-// server/routes/digiflazzRoutes.ts
-var import_express13 = __toESM(require("express"));
+// server/routes/adminGameRoutes.ts
+var import_express14 = __toESM(require("express"));
 
-// server/controllers/digiflazzController.ts
-init_DigiflazzSetting();
-init_encryption();
-init_digiflazzService();
-var getSettings = async (req, res) => {
+// server/models/Game.ts
+var import_mongoose18 = __toESM(require("mongoose"));
+var gameSchema = new import_mongoose18.default.Schema({
+  name: { type: String, required: true },
+  slug: { type: String, required: true, unique: true },
+  logo: { type: String },
+  description: { type: String },
+  status: { type: Boolean, default: true }
+}, { timestamps: true });
+var Game = import_mongoose18.default.models.Game || import_mongoose18.default.model("Game", gameSchema);
+var Game_default = Game;
+
+// server/models/GameField.ts
+var import_mongoose19 = __toESM(require("mongoose"));
+var gameFieldSchema = new import_mongoose19.default.Schema({
+  gameId: { type: import_mongoose19.default.Schema.Types.ObjectId, ref: "Game", required: true },
+  fieldName: { type: String, required: true },
+  // e.g., 'userId', 'zoneId'
+  fieldLabel: { type: String, required: true },
+  // e.g., 'User ID'
+  placeholder: { type: String },
+  validationPattern: { type: String },
+  required: { type: Boolean, default: true }
+}, { timestamps: true });
+var GameField = import_mongoose19.default.models.GameField || import_mongoose19.default.model("GameField", gameFieldSchema);
+var GameField_default = GameField;
+
+// server/models/GameProduct.ts
+var import_mongoose20 = __toESM(require("mongoose"));
+var gameProductSchema = new import_mongoose20.default.Schema({
+  gameId: { type: import_mongoose20.default.Schema.Types.ObjectId, ref: "Game", required: true },
+  buyerSkuCode: { type: String, required: true, unique: true },
+  productName: { type: String, required: true },
+  costPrice: { type: Number, required: true },
+  sellingPrice: { type: Number, required: true },
+  margin: { type: Number, required: true, default: 0 },
+  status: { type: Boolean, default: true }
+}, { timestamps: true });
+var GameProduct = import_mongoose20.default.models.GameProduct || import_mongoose20.default.model("GameProduct", gameProductSchema);
+var GameProduct_default = GameProduct;
+
+// server/routes/adminGameRoutes.ts
+var router12 = import_express14.default.Router();
+router12.use(authenticateAdmin);
+router12.get("/dashboard-stats", async (req, res) => {
   try {
-    const settings = await DigiflazzSetting.findOne();
-    if (!settings) {
-      return res.json({
-        username: "",
-        apiKey: "",
-        // don't send actual key, just placeholder or empty
-        isProduction: false,
-        isActive: false,
-        connectionStatus: "untested"
-      });
-    }
+    const totalGames = await Game_default.countDocuments();
+    const activeProducts = await GameProduct_default.countDocuments({ status: true });
+    const successOrders = await TopupOrder_default.countDocuments({ status: { $in: ["SUCCESS", "PAID"] } });
     res.json({
-      username: settings.username,
-      apiKey: settings.apiKey ? "********" : "",
-      // mask the API key
-      isProduction: settings.isProduction,
-      isActive: settings.isActive,
-      connectionStatus: settings.connectionStatus,
-      lastConnectedAt: settings.lastConnectedAt
+      totalGames,
+      activeProducts,
+      successOrders
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-};
-var saveSettings = async (req, res) => {
+});
+router12.get("/games", async (req, res) => {
   try {
-    const { username, apiKey, isProduction, isActive } = req.body;
-    let settings = await DigiflazzSetting.findOne();
-    let encryptedKey = settings?.apiKey || "";
-    if (apiKey && apiKey !== "********") {
-      encryptedKey = encryptKey2(apiKey);
-    }
+    const games = await Game_default.find().sort({ createdAt: -1 });
+    res.json(games);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router12.post("/games", async (req, res) => {
+  try {
+    const { name, slug, logo, description, status } = req.body;
+    const game = await Game_default.create({ name, slug, logo, description, status });
+    res.json(game);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.put("/games/:id", async (req, res) => {
+  try {
+    const game = await Game_default.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(game);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.delete("/games/:id", async (req, res) => {
+  try {
+    await Game_default.findByIdAndDelete(req.params.id);
+    await GameField_default.deleteMany({ gameId: req.params.id });
+    await GameProduct_default.deleteMany({ gameId: req.params.id });
+    res.json({ message: "Game deleted" });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.get("/games/:id/fields", async (req, res) => {
+  try {
+    const fields = await GameField_default.find({ gameId: req.params.id });
+    res.json(fields);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router12.post("/games/:id/fields", async (req, res) => {
+  try {
+    const field = await GameField_default.create({ ...req.body, gameId: req.params.id });
+    res.json(field);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.delete("/fields/:id", async (req, res) => {
+  try {
+    await GameField_default.findByIdAndDelete(req.params.id);
+    res.json({ message: "Field deleted" });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.get("/digiflazz/settings", async (req, res) => {
+  try {
+    const settings = await DigiflazzService.getSettings();
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router12.put("/digiflazz/settings", async (req, res) => {
+  try {
+    let settings = await DigiflazzSetting_default.findOne();
     if (!settings) {
-      settings = new DigiflazzSetting({
-        username,
-        apiKey: encryptedKey,
-        isProduction,
-        isActive,
-        connectionStatus: "untested"
-      });
+      settings = new DigiflazzSetting_default(req.body);
     } else {
-      settings.username = username;
-      settings.apiKey = encryptedKey;
-      settings.isProduction = isProduction;
-      settings.isActive = isActive;
+      settings.username = req.body.username !== void 0 ? req.body.username : settings.username;
+      settings.apiKey = req.body.apiKey !== void 0 ? req.body.apiKey : settings.apiKey;
+      settings.isActive = req.body.isActive !== void 0 ? req.body.isActive : settings.isActive;
     }
     await settings.save();
-    res.json({ message: "Pengaturan Digiflazz berhasil disimpan" });
+    res.json(settings);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.post("/digiflazz/sync", async (req, res) => {
+  try {
+    const products = await DigiflazzService.getPrepaidProducts();
+    console.log(`[Digiflazz Sync] Total products pulled from API: ${products.length}`);
+    const games = await Game_default.find({ status: true });
+    const brandToGameMap = new Map(games.map((g) => [g.name.toUpperCase(), g._id.toString()]));
+    let syncedCount = 0;
+    for (const p of products) {
+      if (p.seller_product_status === false || p.buyer_product_status === false) continue;
+      const brand = p.brand.toUpperCase();
+      const gameId = brandToGameMap.get(brand);
+      if (gameId) {
+        const existing = await GameProduct_default.findOne({ buyerSkuCode: p.buyer_sku_code });
+        if (existing) {
+          existing.costPrice = p.price;
+          if (p.seller_product_status === false) existing.status = false;
+          await existing.save();
+        } else {
+          await GameProduct_default.create({
+            gameId,
+            buyerSkuCode: p.buyer_sku_code,
+            productName: p.product_name,
+            costPrice: p.price,
+            sellingPrice: p.price + 500,
+            // Default +500 margin
+            margin: 500,
+            status: true
+          });
+        }
+        syncedCount++;
+      }
+    }
+    console.log(`[Digiflazz Sync] Matched and synced products: ${syncedCount}`);
+    res.json({ message: "Sync successful", syncedCount });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router12.get("/products", async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.gameId) filter.gameId = req.query.gameId;
+    const products = await GameProduct_default.find(filter).populate("gameId", "name");
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router12.put("/products/:id", async (req, res) => {
+  try {
+    const { sellingPrice, margin, status } = req.body;
+    const prod = await GameProduct_default.findByIdAndUpdate(req.params.id, { sellingPrice, margin, status }, { new: true });
+    res.json(prod);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router12.get("/orders", async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.status) filter.status = req.query.status;
+    const orders = await TopupOrder_default.find(filter).populate("gameId", "name logo").populate("productId", "productName").sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+var adminGameRoutes_default = router12;
+
+// server/routes/gameRoutes.ts
+var import_express15 = __toESM(require("express"));
+var router13 = import_express15.default.Router();
+router13.get("/", async (req, res) => {
+  try {
+    const games = await Game_default.find({ status: true }).sort({ name: 1 });
+    res.json(games);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router13.get("/:slug", async (req, res) => {
+  try {
+    const game = await Game_default.findOne({ slug: req.params.slug, status: true });
+    if (!game) return res.status(404).json({ error: "Game not found" });
+    res.json(game);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router13.get("/:id/fields", async (req, res) => {
+  try {
+    const fields = await GameField_default.find({ gameId: req.params.id });
+    res.json(fields);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+router13.get("/:id/products", async (req, res) => {
+  try {
+    const products = await GameProduct_default.find({ gameId: req.params.id, status: true }).sort({ sellingPrice: 1 });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+var gameRoutes_default = router13;
+
+// server/routes/topupOrderRoutes.ts
+var import_express16 = __toESM(require("express"));
+var import_midtrans_client3 = __toESM(require("midtrans-client"));
+init_whatsappService();
+var import_express_rate_limit2 = __toESM(require("express-rate-limit"));
+var import_crypto5 = __toESM(require("crypto"));
+var router14 = import_express16.default.Router();
+var topupRateLimit = (0, import_express_rate_limit2.default)({
+  windowMs: 5 * 60 * 1e3,
+  max: 15,
+  message: { error: "Terlalu banyak permintaan topup. Silakan coba lagi nanti." },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+var generateTopupOrderId = () => `TP-${Date.now()}-${Math.floor(Math.random() * 9e3 + 1e3)}`;
+router14.post("/checkout", topupRateLimit, async (req, res) => {
+  try {
+    const { gameId, productId, accountData, buyerName, buyerWa, buyerEmail, paymentMethod = "MIDTRANS" } = req.body;
+    const config = await getMidtransConfig();
+    const isMidtrans = paymentMethod === "MIDTRANS";
+    if (isMidtrans && !config.serverKey) {
+      return res.status(503).json({ error: "Payment gateway Midtrans belum dikonfigurasi admin." });
+    }
+    let snap = null;
+    if (isMidtrans) {
+      snap = new import_midtrans_client3.default.Snap({
+        isProduction: config.isProduction,
+        serverKey: config.serverKey,
+        clientKey: config.clientKey
+      });
+    }
+    const product = await GameProduct_default.findById(productId);
+    if (!product || !product.status) {
+      return res.status(404).json({ error: "Produk Topup tidak ditemukan atau sedang tidak aktif." });
+    }
+    const orderId = generateTopupOrderId();
+    const finalPrice = product.sellingPrice;
+    const newOrder = new TopupOrder_default({
+      invoice: orderId,
+      customerName: buyerName,
+      customerWa: buyerWa,
+      customerEmail: buyerEmail,
+      gameId,
+      productId: product._id,
+      accountData,
+      paymentMethod,
+      amount: finalPrice,
+      status: "PENDING"
+    });
+    await newOrder.save();
+    const newPayment = new Payment({
+      orderId,
+      buyerWa,
+      amount: finalPrice,
+      productName: `Topup - ${product.productName}`,
+      transactionStatus: "pending"
+    });
+    await newPayment.save();
+    let snapToken = "";
+    let redirectUrl = "";
+    if (isMidtrans && snap) {
+      const transaction = await snap.createTransaction({
+        transaction_details: {
+          order_id: orderId,
+          gross_amount: finalPrice
+        },
+        customer_details: {
+          first_name: buyerName,
+          phone: buyerWa,
+          email: buyerEmail || "no-email@piloneko.com"
+        },
+        item_details: [
+          {
+            id: product.buyerSkuCode || product._id.toString(),
+            price: finalPrice,
+            quantity: 1,
+            name: `Topup ${product.productName}`.substring(0, 50)
+          }
+        ]
+      });
+      snapToken = transaction.token;
+      redirectUrl = transaction.redirect_url;
+    }
+    let waUrl = "";
+    if (paymentMethod === "WHATSAPP") {
+      const waSettings = await getWhatsAppSettings();
+      const storeWaNumberRaw = waSettings.whatsappNumber || process.env.STORE_WA || "08123456789";
+      let finalWa = storeWaNumberRaw.replace(/\D/g, "");
+      if (finalWa.startsWith("0")) finalWa = "62" + finalWa.substring(1);
+      else if (!finalWa.startsWith("62")) finalWa = "62" + finalWa;
+      const waText = `*\u{1F514} KONFIRMASI TOPUP - PILONEKO*
+
+Halo Admin, saya ingin topup dengan detail:
+
+*\u{1F4DD} INVOICE:* ${orderId}
+
+*\u{1F464} PEMBELI*
+\u2022 Nama: ${buyerName}
+\u2022 WhatsApp: ${buyerWa}
+
+*\u{1F4E6} PESANAN*
+\u2022 Produk: ${product.productName}
+\u2022 Harga: Rp ${finalPrice.toLocaleString("id-ID")}
+
+Berikut saya lampirkan bukti transfer pembayaran saya. Mohon segera diproses ya min, terima kasih! \u{1F64F}`;
+      waUrl = `https://api.whatsapp.com/send/?phone=${finalWa}&text=${encodeURIComponent(waText)}`;
+    }
+    res.json({
+      invoice: orderId,
+      snapToken,
+      redirectUrl,
+      clientKey: config.clientKey,
+      waUrl
+    });
+  } catch (error) {
+    console.error("Topup Checkout Error:", error);
+    res.status(500).json({ error: error.message || "Terjadi kesalahan sistem saat checkout topup" });
+  }
+});
+router14.get("/status/:invoice", async (req, res) => {
+  try {
+    const order = await TopupOrder_default.findOne({ invoice: req.params.invoice });
+    if (!order) return res.status(404).json({ error: "Order not found" });
+    res.json({
+      invoice: order.invoice,
+      status: order.status,
+      amount: order.amount,
+      digiflazzResponse: order.digiflazzResponse
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
-var testConnectionAndGetBalance = async (req, res) => {
+});
+router14.post("/webhook/digiflazz", async (req, res) => {
   try {
-    const balanceData = await cekSaldo();
-    let settings = await DigiflazzSetting.findOne();
-    if (settings) {
-      settings.connectionStatus = "connected";
-      settings.lastConnectedAt = /* @__PURE__ */ new Date();
-      await settings.save();
+    const signature = req.headers["x-hub-signature"] || req.headers["X-Hub-Signature"];
+    const event = req.headers["x-digiflazz-event"] || req.headers["X-Digiflazz-Event"];
+    const settings = await DigiflazzSetting_default.findOne();
+    const secret = settings?.webhookSecret;
+    if (secret && signature) {
+      const payloadString = JSON.stringify(req.body);
+      const expectedSignature = "sha1=" + import_crypto5.default.createHmac("sha1", secret).update(payloadString).digest("hex");
+      if (expectedSignature !== signature) {
+        console.warn("[Digiflazz Webhook] Signature mismatch. Expected:", expectedSignature, "Got:", signature);
+      }
     }
-    res.json({
-      success: true,
-      balance: balanceData.deposit
-    });
+    const data = req.body.data;
+    if (!data || !data.ref_id) {
+      return res.status(400).json({ error: "Invalid payload format" });
+    }
+    const { ref_id, status, message, sn } = data;
+    console.log(`[Digiflazz Webhook] Received update for ${ref_id}: ${status}`);
+    const order = await TopupOrder_default.findOne({ invoice: ref_id });
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    let newStatus = order.status;
+    if (status === "Sukses") {
+      newStatus = "SUCCESS";
+    } else if (status === "Gagal") {
+      newStatus = "FAILED";
+    } else if (status === "Pending") {
+      newStatus = "PROCESSING";
+    }
+    order.status = newStatus;
+    order.digiflazzResponse = data;
+    await order.save();
+    res.status(200).json({ success: true, message: "Webhook processed" });
   } catch (error) {
-    let settings = await DigiflazzSetting.findOne();
-    if (settings) {
-      settings.connectionStatus = "invalid_key";
-      await settings.save();
-    }
-    res.status(400).json({ error: error.message });
+    console.error("Digiflazz Webhook Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+var topupOrderRoutes_default = router14;
+
+// server/routes/seoRoutes.ts
+var import_express17 = __toESM(require("express"));
+var router15 = import_express17.default.Router();
+router15.get("/sitemap.xml", async (req, res) => {
+  try {
+    const baseUrl = process.env.APP_URL || "https://piloneko.com";
+    const products = await Product_default.find({ isActive: true }).select("slug updatedAt").lean();
+    const categories = await Category_default.find().select("slug").lean();
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/game-topup</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+`;
+    categories.forEach((cat) => {
+      xml += `  <url>
+    <loc>${baseUrl}/?category=${cat.slug}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+`;
+    });
+    products.forEach((prod) => {
+      xml += `  <url>
+    <loc>${baseUrl}/product/${prod.slug}</loc>
+    <lastmod>${new Date(prod.updatedAt).toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
+    });
+    xml += `</urlset>`;
+    res.header("Content-Type", "application/xml");
+    res.send(xml);
+  } catch (error) {
+    console.error("Error generating sitemap:", error);
+    res.status(500).end();
+  }
+});
+router15.get("/robots.txt", (req, res) => {
+  const baseUrl = process.env.APP_URL || "https://piloneko.com";
+  res.type("text/plain");
+  res.send(`User-agent: *
+Allow: /
+
+Sitemap: ${baseUrl}/sitemap.xml
+`);
+});
+var seoRoutes_default = router15;
+
+// server/utils/logger.ts
+var import_winston = __toESM(require("winston"));
+var { combine, timestamp, printf, colorize, errors } = import_winston.default.format;
+var logFormat = printf(({ level, message, timestamp: timestamp2, stack }) => {
+  return `${timestamp2} [${level}]: ${stack || message}`;
+});
+var logger = import_winston.default.createLogger({
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
+  format: combine(
+    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    errors({ stack: true }),
+    logFormat
+  ),
+  transports: [
+    new import_winston.default.transports.Console({
+      format: combine(colorize(), logFormat)
+    })
+  ]
+});
+
+// server/utils/response.ts
+var ApiResponse = class {
+  static success(res, statusCode, message, data) {
+    return res.status(statusCode).json({
+      success: true,
+      message,
+      data
+    });
+  }
+  static error(res, statusCode, message, errors2) {
+    return res.status(statusCode).json({
+      success: false,
+      message,
+      errors: errors2
+    });
+  }
+  static paginated(res, statusCode, message, data, meta) {
+    return res.status(statusCode).json({
+      success: true,
+      message,
+      data,
+      meta
+    });
   }
 };
 
-// server/routes/digiflazzRoutes.ts
-var router13 = import_express13.default.Router();
-router13.use(authenticateAdmin);
-router13.get("/settings", getSettings);
-router13.post("/settings", saveSettings);
-router13.get("/balance", testConnectionAndGetBalance);
-var digiflazzRoutes_default = router13;
+// server/middlewares/error.middleware.ts
+var globalErrorHandler = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.message = err.message || "Internal Server Error";
+  if (err.statusCode >= 500) {
+    logger.error(`[${req.method} ${req.url}] ${err.stack}`);
+  } else {
+    logger.warn(`[${req.method} ${req.url}] ${err.message}`);
+  }
+  if (err.name === "CastError") {
+    err = new AppError(`Invalid ${err.path}: ${err.value}`, 400);
+  }
+  if (err.code === 11e3) {
+    const value = err.errmsg?.match(/(["'])(\\?.)*?\1/)?.[0];
+    err = new AppError(`Duplicate field value: ${value}. Please use another value!`, 400);
+  }
+  if (err.name === "ValidationError") {
+    const errors2 = Object.values(err.errors).map((el) => el.message);
+    err = new AppError(`Invalid input data. ${errors2.join(". ")}`, 400);
+  }
+  if (err.name === "JsonWebTokenError") {
+    err = new AppError("Invalid token. Please log in again!", 401);
+  }
+  if (err.name === "TokenExpiredError") {
+    err = new AppError("Your token has expired! Please log in again.", 401);
+  }
+  if (process.env.NODE_ENV === "production") {
+    if (err.isOperational) {
+      return ApiResponse.error(res, err.statusCode, err.message);
+    }
+    return ApiResponse.error(res, 500, "Something went very wrong!");
+  }
+  return res.status(err.statusCode).json({
+    success: false,
+    message: err.message,
+    error: err,
+    stack: err.stack
+  });
+};
 
 // server/app.ts
-var app = (0, import_express14.default)();
+var app = (0, import_express18.default)();
 var IS_PRODUCTION = process.env.NODE_ENV === "production";
 app.use(
   (0, import_helmet.default)({
@@ -2923,6 +3791,18 @@ app.use(
     crossOriginEmbedderPolicy: false
   })
 );
+app.use((0, import_hpp.default)());
+app.use((0, import_compression.default)());
+var apiLimiter = (0, import_express_rate_limit3.default)({
+  windowMs: 1 * 60 * 1e3,
+  // 1 menit
+  max: 200,
+  // Limit 200 request per menit per IP
+  message: { error: "Terlalu banyak permintaan dari IP ini, coba lagi nanti." },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use("/api/", apiLimiter);
 var allowedOrigins = process.env.APP_URL ? [process.env.APP_URL, "https://piloneko.com", "http://localhost:3000", "http://localhost:5173"] : ["https://piloneko.com", "http://localhost:3000", "http://localhost:5173"];
 app.use(
   (0, import_cors.default)({
@@ -2936,21 +3816,27 @@ app.use(
     credentials: true
   })
 );
-app.use(import_express14.default.json({ limit: "10mb" }));
-app.use(import_express14.default.urlencoded({ extended: true, limit: "10mb" }));
+app.use(import_express18.default.json({ limit: "10mb" }));
+app.use(import_express18.default.urlencoded({ extended: true, limit: "10mb" }));
 app.use((0, import_cookie_parser.default)());
 db_default().catch((err) => console.error("Initial DB connection failed:", err.message));
-app.use("/api/products", productRoutes_default);
-app.use("/api/categories", categoryRoutes_default);
+app.use("/", seoRoutes_default);
+app.use("/api/products", publicProductRoutes);
+app.use("/api/categories", publicCategoryRoutes);
 app.use("/api/orders", orderRoutes_default);
 app.use("/api/payment", paymentRoutes_default);
+app.use("/api/topup-games", gameRoutes_default);
+app.use("/api/topup-orders", topupOrderRoutes_default);
+app.use("/api/admin", auth_routes_default);
+app.use("/api/admin", adminCategoryRoutes);
+app.use("/api/admin", adminProductRoutes);
 app.use("/api/admin/stocks", stockRoutes_default);
 app.use("/api/admin/payment-settings", paymentSettingsRoutes_default);
 app.use("/api/admin/webhook-logs", webhookLogRoutes_default);
 app.use("/api/admin/whatsapp", whatsappRoutes_default);
 app.use("/api/admin/customers", customerRoutes_default);
+app.use("/api/admin/topup", adminGameRoutes_default);
 app.use("/api/admin/upload", uploadRoutes_default);
-app.use("/api/admin/digiflazz", digiflazzRoutes_default);
 app.use("/api/admin", adminRoutes_default);
 app.use("/api", publicRoutes_default);
 app.get("/api/health", (_req, res) => {
@@ -2962,17 +3848,14 @@ app.get("/api/health", (_req, res) => {
   });
 });
 if (IS_PRODUCTION && !process.env.VERCEL) {
-  const distPath = import_path.default.join(process.cwd(), "dist");
-  const publicPath = import_path.default.join(process.cwd(), "public");
-  app.use(import_express14.default.static(publicPath));
-  app.use(import_express14.default.static(distPath));
+  const distPath = import_path2.default.join(process.cwd(), "dist");
+  const publicPath = import_path2.default.join(process.cwd(), "public");
+  app.use(import_express18.default.static(publicPath));
+  app.use(import_express18.default.static(distPath));
   app.get("*", (_req, res) => {
-    res.sendFile(import_path.default.join(distPath, "index.html"));
+    res.sendFile(import_path2.default.join(distPath, "index.html"));
   });
 }
-app.use((err, req, res, next) => {
-  console.error("Global Error:", err);
-  res.status(500).json({ error: err.message || "Internal Server Error" });
-});
+app.use(globalErrorHandler);
 var app_default = app;
 //# sourceMappingURL=index.js.map
