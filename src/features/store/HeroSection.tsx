@@ -118,11 +118,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         )}
 
-        {/* Animated Cyber Tag Header */}
-        <div className="inline-flex items-center gap-1.5 border border-accent-secondary/40 bg-accent-secondary/5 text-accent-secondary font-orbitron text-xs font-semibold tracking-widest px-4 py-2 mb-10 glow-cyan">
-          <Zap className="w-4 h-4 text-accent-secondary animate-pulse" />
-          <span>CYBERNETIC MARKETPLACE LIVE v1.0.8</span>
-        </div>
+
+
 
         {/* Headline with font Orbitron and cyan neon text-shadow */}
         <h1 className="font-orbitron font-black text-4xl sm:text-6xl md:text-7xl leading-tight tracking-tighter text-white mb-6">
