@@ -3843,14 +3843,34 @@ app.get("/api/health", (_req, res) => {
     platform: process.env.VERCEL ? "Vercel Serverless" : "Node.js Server"
   });
 });
-app.get("/api/debug-env", (_req, res) => {
+app.get("/api/debug-env", async (_req, res) => {
+  let dbStatus = "UNKNOWN";
+  let dbError = null;
+  try {
+    const mongoose21 = require("mongoose");
+    if (mongoose21.connection.readyState !== 1) {
+      await db_default();
+    }
+    const state = mongoose21.connection.readyState;
+    const states = ["disconnected", "connected", "connecting", "disconnecting"];
+    dbStatus = states[state] || "UNKNOWN";
+    if (state === 1) {
+      const collections = await mongoose21.connection.db.listCollections().toArray();
+      dbStatus += ` (collections count: ${collections.length})`;
+    }
+  } catch (err) {
+    dbStatus = "ERROR";
+    dbError = err.message;
+  }
   res.json({
     NODE_ENV: process.env.NODE_ENV || "MISSING",
     MONGO_URI: process.env.MONGO_URI ? "SET \u2713" : "MISSING \u2717",
     JWT_SECRET: process.env.JWT_SECRET ? "SET \u2713" : "MISSING \u2717",
     SESSION_SECRET: process.env.SESSION_SECRET ? "SET \u2713" : "MISSING \u2717",
     ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ? "SET \u2713" : "MISSING \u2717",
-    VERCEL: process.env.VERCEL || "false"
+    VERCEL: process.env.VERCEL || "false",
+    dbStatus,
+    dbError
   });
 });
 if (IS_PRODUCTION && !process.env.VERCEL) {

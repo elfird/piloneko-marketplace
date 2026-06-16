@@ -149,7 +149,27 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Debug endpoint — cek env vars yang aktif (non-sensitive)
-app.get("/api/debug-env", (_req, res) => {
+app.get("/api/debug-env", async (_req, res) => {
+  let dbStatus = "UNKNOWN";
+  let dbError = null;
+  try {
+    const mongoose = require("mongoose");
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    const state = mongoose.connection.readyState;
+    const states = ["disconnected", "connected", "connecting", "disconnecting"];
+    dbStatus = states[state] || "UNKNOWN";
+    
+    if (state === 1) {
+      const collections = await mongoose.connection.db.listCollections().toArray();
+      dbStatus += ` (collections count: ${collections.length})`;
+    }
+  } catch (err: any) {
+    dbStatus = "ERROR";
+    dbError = err.message;
+  }
+
   res.json({
     NODE_ENV: process.env.NODE_ENV || "MISSING",
     MONGO_URI: process.env.MONGO_URI ? "SET ✓" : "MISSING ✗",
@@ -157,6 +177,8 @@ app.get("/api/debug-env", (_req, res) => {
     SESSION_SECRET: process.env.SESSION_SECRET ? "SET ✓" : "MISSING ✗",
     ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ? "SET ✓" : "MISSING ✗",
     VERCEL: process.env.VERCEL || "false",
+    dbStatus,
+    dbError,
   });
 });
 
