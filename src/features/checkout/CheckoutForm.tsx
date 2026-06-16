@@ -3,6 +3,7 @@ import { CreditCard, MessageSquare } from "lucide-react";
 import { Product, ProductPackage } from "../../types";
 import { CyberButton } from "../../components/ui/CyberButton";
 import { formatPrice } from "../../lib/utils";
+import { useStore } from "../../store/useStore";
 
 interface CheckoutFormProps {
   product: Product;
@@ -59,6 +60,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
   handleOrderSubmit,
   handleWaCheckout,
 }) => {
+  const { midtransActive } = useStore();
+
   return (
     <form onSubmit={handleOrderSubmit} className="space-y-4">
       <div className="border-t border-accent-primary/10 pt-4">
@@ -228,16 +231,18 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
       </div>
 
       <div className="pt-2 space-y-3">
-        <CyberButton
-          type="submit"
-          variant="primary"
-          size="lg"
-          className="w-full font-bold shadow-[0_0_16px_rgba(0,245,255,0.25)] hover:shadow-[0_0_25px_rgba(0,245,255,0.5)]"
-          disabled={submittingOrder}
-        >
-          <CreditCard className="w-5 h-5 shrink-0" />
-          {submittingOrder ? "MEMPROSES..." : "BAYAR OTOMATIS (MIDTRANS)"}
-        </CyberButton>
+        {midtransActive && (
+          <CyberButton
+            type="submit"
+            variant="primary"
+            size="lg"
+            className="w-full font-bold shadow-[0_0_16px_rgba(0,245,255,0.25)] hover:shadow-[0_0_25px_rgba(0,245,255,0.5)]"
+            disabled={submittingOrder}
+          >
+            <CreditCard className="w-5 h-5 shrink-0" />
+            {submittingOrder ? "MEMPROSES..." : "BAYAR OTOMATIS (MIDTRANS)"}
+          </CyberButton>
+        )}
 
         <CyberButton
           type="button"

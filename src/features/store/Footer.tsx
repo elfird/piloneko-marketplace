@@ -8,7 +8,7 @@ interface FooterProps {
   footerDesc: string;
   igUrl: string;
   tiktokUrl: string;
-  fbUrl: string;
+  fbUrl?: string;
   onNavigate: (view: string) => void;
 }
 
@@ -19,9 +19,14 @@ export const Footer: React.FC<FooterProps> = ({
   footerDesc,
   igUrl,
   tiktokUrl,
-  fbUrl,
   onNavigate,
 }) => {
+  const formatUrl = (url: string) => {
+    if (!url || url === "-") return "#";
+    if (url.startsWith("http://") || url.startsWith("https://")) return url;
+    return `https://${url}`;
+  };
+
   return (
     <footer className="bg-cyber-bg border-t border-accent-primary/20 relative z-10 pt-16 pb-8">
       {/* Decorative colored glow panels */}
@@ -41,16 +46,13 @@ export const Footer: React.FC<FooterProps> = ({
 
             {/* Social handles */}
             <div className="flex gap-4 mt-6">
-              <a href={igUrl} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-cyber-muted/20 hover:border-accent-primary hover:text-accent-primary bg-cyber-card flex items-center justify-center rounded-xs transition-colors cursor-pointer">
+              <a href={formatUrl(igUrl)} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-cyber-muted/20 hover:border-accent-primary hover:text-accent-primary bg-cyber-card flex items-center justify-center rounded-xs transition-colors cursor-pointer">
                 <Instagram className="w-4.5 h-4.5" />
               </a>
-              <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-cyber-muted/20 hover:border-accent-primary hover:text-accent-primary bg-cyber-card flex items-center justify-center rounded-xs transition-colors cursor-pointer">
+              <a href={formatUrl(tiktokUrl)} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-cyber-muted/20 hover:border-accent-primary hover:text-accent-primary bg-cyber-card flex items-center justify-center rounded-xs transition-colors cursor-pointer">
                 <svg className="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.63 4.15.99 1.11 2.39 1.83 3.93 2.01v3.83c-1.42-.04-2.82-.48-4.01-1.28-.2-.14-.39-.28-.58-.44-.04 1.95-.02 3.91-.03 5.86 0 2.22-.64 4.46-2.18 6.07-1.46 1.59-3.66 2.45-5.83 2.31-2.91-.12-5.71-2.15-6.55-4.99-.95-3.04.14-6.6 2.63-8.32 1.62-1.15 3.69-1.54 5.64-1.14v3.9c-1.15-.36-2.48-.12-3.4.61-1.04.79-1.44 2.22-1.1 3.5.38 1.48 1.82 2.53 3.37 2.41 1.45-.04 2.76-1.15 2.92-2.59.12-1.21.05-2.43.06-3.64.01-3.79-.01-7.58-.01-11.37z" />
                 </svg>
-              </a>
-              <a href={fbUrl} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-cyber-muted/20 hover:border-accent-primary hover:text-accent-primary bg-cyber-card flex items-center justify-center rounded-xs transition-colors cursor-pointer">
-                <Facebook className="w-4.5 h-4.5" />
               </a>
             </div>
           </div>

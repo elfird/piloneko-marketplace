@@ -21,18 +21,23 @@ const generateTopupOrderId = () =>
 
 router.post("/checkout", topupRateLimit, async (req, res) => {
   try {
-    const { gameId, productId, accountData, buyerName, buyerWa, buyerEmail } = req.body;
+    const { gameId, productId, accountData, buyerName, buyerWa, buyerEmail, paymentMethod = "MIDTRANS" } = req.body;
 
     const config = await getMidtransConfig();
-    if (!config.serverKey) {
+    const isMidtrans = paymentMethod === "MIDTRANS";
+
+    if (isMidtrans && !config.serverKey) {
       return res.status(503).json({ error: "Payment gateway Midtrans belum dikonfigurasi admin." });
     }
 
-    const snap = new midtransClient.Snap({
-      isProduction: config.isProduction,
-      serverKey: config.serverKey,
-      clientKey: config.clientKey,
-    });
+    let snap: midtransClient.Snap | null = null;
+    if (isMidtrans) {
+      snap = new midtransClient.Snap({
+        isProduction: config.isProduction,
+        serverKey: config.serverKey,
+        clientKey: config.clientKey,
+      });
+    }
 
     const product = await GameProduct.findById(productId);
     if (!product || !product.status) {
@@ -51,7 +56,7 @@ router.post("/checkout", topupRateLimit, async (req, res) => {
       gameId,
       productId: product._id,
       accountData,
-      paymentMethod: "MIDTRANS",
+      paymentMethod,
       amount: finalPrice,
       status: "PENDING",
     });
@@ -67,32 +72,52 @@ router.post("/checkout", topupRateLimit, async (req, res) => {
     });
     await newPayment.save();
 
-    // Create Snap Transaction
-    const transaction = await snap.createTransaction({
-      transaction_details: {
-        order_id: orderId,
-        gross_amount: finalPrice,
-      },
-      customer_details: {
-        first_name: buyerName,
-        phone: buyerWa,
-        email: buyerEmail || "no-email@piloneko.com",
-      },
-      item_details: [
-        {
-          id: product.buyerSkuCode || product._id.toString(),
-          price: finalPrice,
-          quantity: 1,
-          name: `Topup ${product.productName}`.substring(0, 50),
+    let snapToken = "";
+    let redirectUrl = "";
+
+    if (isMidtrans && snap) {
+      // Create Snap Transaction
+      const transaction = await snap.createTransaction({
+        transaction_details: {
+          order_id: orderId,
+          gross_amount: finalPrice,
         },
-      ],
-    });
+        customer_details: {
+          first_name: buyerName,
+          phone: buyerWa,
+          email: buyerEmail || "no-email@piloneko.com",
+        },
+        item_details: [
+          {
+            id: product.buyerSkuCode || product._id.toString(),
+            price: finalPrice,
+            quantity: 1,
+            name: `Topup ${product.productName}`.substring(0, 50),
+          },
+        ],
+      });
+      snapToken = transaction.token;
+      redirectUrl = transaction.redirect_url;
+    }
+
+    let waUrl = "";
+    if (paymentMethod === "WHATSAPP") {
+      const waSettings = await getWhatsAppSettings();
+      const storeWaNumberRaw = waSettings.whatsappNumber || process.env.STORE_WA || "08123456789";
+      let finalWa = storeWaNumberRaw.replace(/\D/g, "");
+      if (finalWa.startsWith("0")) finalWa = "62" + finalWa.substring(1);
+      else if (!finalWa.startsWith("62")) finalWa = "62" + finalWa;
+
+      const waText = `*🔔 KONFIRMASI TOPUP - PILONEKO*\n\nHalo Admin, saya ingin topup dengan detail:\n\n*📝 INVOICE:* ${orderId}\n\n*👤 PEMBELI*\n• Nama: ${buyerName}\n• WhatsApp: ${buyerWa}\n\n*📦 PESANAN*\n• Produk: ${product.productName}\n• Harga: Rp ${finalPrice.toLocaleString('id-ID')}\n\nBerikut saya lampirkan bukti transfer pembayaran saya. Mohon segera diproses ya min, terima kasih! 🙏`;
+      waUrl = `https://api.whatsapp.com/send/?phone=${finalWa}&text=${encodeURIComponent(waText)}`;
+    }
 
     res.json({
       invoice: orderId,
-      snapToken: transaction.token,
-      redirectUrl: transaction.redirect_url,
+      snapToken,
+      redirectUrl,
       clientKey: config.clientKey,
+      waUrl
     });
   } catch (error: any) {
     console.error("Topup Checkout Error:", error);

@@ -30,107 +30,12 @@ router.get('/stats', authenticateAdmin, async (req, res) => {
 });
 
 // ======================= CATEGORIES =======================
-router.get('/categories', authenticateAdmin, async (req, res) => {
-  try {
-    const categories = await Category.find().sort({ sortOrder: 1 }).lean();
-    const catsWithCount = await Promise.all(categories.map(async (c) => {
-      const pCount = await Product.countDocuments({ categoryId: c._id });
-      return { ...c, id: c._id, _count: { products: pCount } };
-    }));
-    res.json(catsWithCount);
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.post('/categories', authenticateAdmin, async (req, res) => {
-  try {
-    const cat = await Category.create(req.body);
-    res.json({ success: true, category: cat });
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.put('/categories/:id', authenticateAdmin, async (req, res) => {
-  try {
-    const cat = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json({ success: true, category: cat });
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.delete('/categories/:id', authenticateAdmin, async (req, res) => {
-  try { await Category.findByIdAndDelete(req.params.id); res.json({ success: true }); }
-  catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.put('/categories-reorder', authenticateAdmin, async (req, res) => {
-  try {
-    const { orders } = req.body;
-    if (Array.isArray(orders)) {
-      for (const item of orders) {
-        await Category.findByIdAndUpdate(item.id, { sortOrder: item.sortOrder });
-      }
-    }
-    res.json({ success: true });
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
+// Categories have been migrated to Clean Architecture (see routes/category.routes.ts)
 
 // ======================= PRODUCTS =======================
-router.get('/products', authenticateAdmin, async (req, res) => {
-  try {
-    const products = await Product.find().populate('categoryId').sort({ createdAt: -1 }).lean();
-    res.json(products.map(p => ({ 
-      ...p, 
-      id: p._id,
-      packages: (p.packages || []).map((pkg: any) => ({ ...pkg, id: pkg._id }))
-    })));
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.post('/products', authenticateAdmin, async (req, res) => {
-  try {
-    const prod = await Product.create({ ...req.body, packages: [] });
-    res.json({ success: true, product: prod });
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.put('/products/:id', authenticateAdmin, async (req, res) => {
-  try {
-    const prod = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json({ success: true, product: prod });
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
-router.delete('/products/:id', authenticateAdmin, async (req, res) => {
-  try { await Product.findByIdAndDelete(req.params.id); res.json({ success: true }); }
-  catch (error: any) { res.status(500).json({ error: error.message }); }
-});
+// Products have been migrated to Clean Architecture (see routes/product.routes.ts)
 
 // ======================= PACKAGES & STOCKS =======================
-// Add package to product (Admin)
-router.post('/products/:productId/packages', authenticateAdmin, async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const { label, price, originalPrice, warrantyDays, maxDevices } = req.body;
-    
-    const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ error: "Product not found" });
-
-    product.packages.push({ 
-      label, 
-      price, 
-      originalPrice, 
-      warrantyDays, 
-      maxDevices, 
-      durationDays: warrantyDays, // durationDays is required by schema
-      isActive: true 
-    } as any);
-    await product.save();
-    
-    res.json({ success: true, packages: product.packages });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
-router.delete('/products/:productId/packages/:packageId', authenticateAdmin, async (req, res) => {
-  try {
-    const p = await Product.findById(req.params.productId);
-    if (p) {
-      p.packages = p.packages.filter(pkg => pkg._id?.toString() !== req.params.packageId);
-      await p.save(); res.json(p.packages);
-    }
-  } catch (error: any) { res.status(500).json({ error: error.message }); }
-});
 router.get('/stocks', authenticateAdmin, async (req, res) => {
   try {
     const stocks = await AccountStock.find().sort({ createdAt: -1 }).lean();

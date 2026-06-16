@@ -9,4 +9,5 @@ const gameFieldSchema = new mongoose.Schema({
   required: { type: Boolean, default: true }
 }, { timestamps: true });
 
-export default mongoose.models.GameField || mongoose.model("GameField", gameFieldSchema);
+const GameField = mongoose.models.GameField || mongoose.model("GameField", gameFieldSchema);
+export default GameField as mongoose.Model<any>;

@@ -2,6 +2,7 @@ import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './store/useStore';
 import { useMidtrans } from './hooks/useMidtrans';
+import { useInitialData } from './hooks/useInitialData';
 import { InstallPrompt } from './components/pwa/InstallPrompt';
 import { OfflinePage } from './components/pwa/OfflinePage';
 
@@ -35,61 +36,9 @@ const CyberLoading = () => (
 
 export default function App() {
   useMidtrans(); // Inject Midtrans SNAP Script
-  const { 
-    siteContent,
-    setSiteContent, 
-    setCategories, 
-    setProducts, 
-    setTestimonials, 
-    setFaqs, 
-    setBanners, 
-    setFlashSale, 
-    setLoading, 
-    isLoading 
-  } = useStore();
+  const { siteContent, isLoading } = useStore();
 
-  useEffect(() => {
-    const initializeData = async () => {
-      try {
-        setLoading(true);
-        const [resContent, resCat, resProd, resFlash, resTest, resFaq, resBanners] = await Promise.all([
-          fetch("/api/site-content"),
-          fetch("/api/categories"),
-          fetch("/api/products"),
-          fetch("/api/flash-sales"),
-          fetch("/api/testimonials"),
-          fetch("/api/faqs"),
-          fetch("/api/banners"),
-        ]);
-
-        if (resContent.ok) {
-          const rawContent = await resContent.json();
-          const mappedContent: Record<string, string> = {};
-          rawContent.forEach((item: any) => {
-            mappedContent[item.key] = item.value;
-          });
-          setSiteContent(mappedContent);
-          
-          if (resFlash.ok) {
-            setFlashSale(mappedContent.flash_sale_active === "true", mappedContent.flash_sale_ends_at || "", await resFlash.json());
-          }
-        }
-        
-        if (resCat.ok) setCategories(await resCat.json());
-        if (resProd.ok) setProducts(await resProd.json());
-        if (resTest.ok) setTestimonials(await resTest.json());
-        if (resFaq.ok) setFaqs(await resFaq.json());
-        if (resBanners.ok) setBanners(await resBanners.json());
-        
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initializeData();
-  }, [setSiteContent, setCategories, setProducts, setTestimonials, setFaqs, setBanners, setFlashSale, setLoading]);
+  useInitialData();
 
   // Apply dynamic theme variables
   const accentPrimary = siteContent['theme_accent_primary'] || "#00F5FF";

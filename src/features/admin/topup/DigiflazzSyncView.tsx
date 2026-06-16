@@ -6,6 +6,7 @@ interface Props { token: string; }
 export const DigiflazzSyncView: React.FC<Props> = ({ token }) => {
   const [username, setUsername] = useState("");
   const [apiKey, setApiKey] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
@@ -14,6 +15,7 @@ export const DigiflazzSyncView: React.FC<Props> = ({ token }) => {
       .then(d => {
         setUsername(d.username || "");
         setApiKey(d.apiKey || "");
+        setIsActive(d.isActive !== false);
       });
   }, [token]);
 
@@ -22,7 +24,7 @@ export const DigiflazzSyncView: React.FC<Props> = ({ token }) => {
     await fetch("/api/admin/topup/digiflazz/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ username, apiKey })
+      body: JSON.stringify({ username, apiKey, isActive })
     });
     alert("Settings saved!");
   };
@@ -51,6 +53,29 @@ export const DigiflazzSyncView: React.FC<Props> = ({ token }) => {
       </h1>
 
       <form onSubmit={handleSave} className="space-y-4 max-w-md bg-cyber-card p-6 border border-cyber-muted/20">
+        <div className="flex items-center justify-between p-4 border border-cyber-muted/20 bg-cyber-surface/30 mb-4">
+          <div>
+            <span className="block text-xs font-orbitron font-bold text-white uppercase tracking-widest">
+              Status Fitur Game Topup
+            </span>
+            <span className="text-[10px] text-cyber-muted font-mono">
+              {isActive ? "✅ AKTIF — Fitur Topup Game berjalan normal" : "⏸️ NONAKTIF — Fitur disembunyikan sepenuhnya"}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsActive(prev => !prev)}
+            className="cursor-pointer"
+            title="Toggle Fitur"
+          >
+            {isActive ? (
+              <svg className="w-8 h-8 text-[#BF00FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            ) : (
+              <svg className="w-8 h-8 text-cyber-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            )}
+          </button>
+        </div>
+
         <div>
           <label className="block text-xs font-mono text-[#BF00FF] mb-1">Digiflazz Username</label>
           <input type="text" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-cyber-bg border border-[#BF00FF]/30 p-2 text-white" />

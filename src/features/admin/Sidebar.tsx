@@ -27,6 +27,7 @@ import {
   Users,
   Gamepad2,
 } from "lucide-react";
+import { useStore } from "../../store/useStore";
 
 interface SidebarProps {
   currentView: string;
@@ -43,6 +44,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
   onNavigateHome,
 }) => {
+  const { digiflazzActive } = useStore();
+
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: "analytics", label: "Analitik & Chart", icon: <BarChart3 className="w-4 h-4" /> },
@@ -131,42 +134,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
 
           {/* Section: GAME TOPUP */}
-          <div className="mt-6 mb-2 px-3 flex items-center justify-between">
-            <span className="text-[10px] font-orbitron font-bold text-[#BF00FF]/80 uppercase tracking-widest flex items-center gap-2">
-              <Gamepad2 className="w-3.5 h-3.5" /> GAME TOPUP
-            </span>
-            <div className="h-[1px] bg-[#BF00FF]/20 flex-1 ml-3 shadow-[0_0_5px_rgba(191,0,255,0.3)]"></div>
-          </div>
-          <button
-            onClick={() => onChangeView("topup_dashboard")}
-            className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "topup_dashboard" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
-          >
-            <LayoutDashboard className="w-4 h-4" /> <span>Topup Dashboard</span>
-          </button>
-          <button
-            onClick={() => onChangeView("manage_games")}
-            className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "manage_games" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
-          >
-            <Folder className="w-4 h-4" /> <span>Manage Games</span>
-          </button>
-          <button
-            onClick={() => onChangeView("game_products")}
-            className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "game_products" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
-          >
-            <Layers className="w-4 h-4" /> <span>Game Products</span>
-          </button>
-          <button
-            onClick={() => onChangeView("digiflazz_sync")}
-            className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "digiflazz_sync" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
-          >
-            <Settings className="w-4 h-4" /> <span>Digiflazz Sync</span>
-          </button>
-          <button
-            onClick={() => onChangeView("topup_orders")}
-            className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "topup_orders" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
-          >
-            <ShoppingCart className="w-4 h-4" /> <span>Topup Orders</span>
-          </button>
+          {digiflazzActive && (
+            <>
+              <div className="mt-6 mb-2 px-3 flex items-center justify-between">
+                <span className="text-[10px] font-orbitron font-bold text-[#BF00FF]/80 uppercase tracking-widest flex items-center gap-2">
+                  <Gamepad2 className="w-3.5 h-3.5" /> GAME TOPUP
+                </span>
+                <div className="h-[1px] bg-[#BF00FF]/20 flex-1 ml-3 shadow-[0_0_5px_rgba(191,0,255,0.3)]"></div>
+              </div>
+              <button
+                onClick={() => onChangeView("topup_dashboard")}
+                className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "topup_dashboard" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
+              >
+                <LayoutDashboard className="w-4 h-4" /> <span>Topup Dashboard</span>
+              </button>
+              <button
+                onClick={() => onChangeView("manage_games")}
+                className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "manage_games" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
+              >
+                <Folder className="w-4 h-4" /> <span>Manage Games</span>
+              </button>
+              <button
+                onClick={() => onChangeView("game_products")}
+                className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "game_products" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
+              >
+                <Layers className="w-4 h-4" /> <span>Game Products</span>
+              </button>
+              <button
+                onClick={() => onChangeView("digiflazz_sync")}
+                className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "digiflazz_sync" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
+              >
+                <Settings className="w-4 h-4" /> <span>Digiflazz Sync</span>
+              </button>
+              <button
+                onClick={() => onChangeView("topup_orders")}
+                className={`w-full flex items-center gap-3.5 px-4 py-2.5 text-left text-xs tracking-wider transition-all duration-200 cursor-pointer rounded-xs border uppercase ${currentView === "topup_orders" ? "border-[#BF00FF]/30 text-[#BF00FF] bg-[#BF00FF]/10 shadow-[0_0_8px_rgba(191,0,255,0.15)] font-bold" : "border-transparent text-cyber-muted hover:border-[#BF00FF]/10 hover:bg-cyber-surface/50 hover:text-white"}`}
+              >
+                <ShoppingCart className="w-4 h-4" /> <span>Topup Orders</span>
+              </button>
+            </>
+          )}
 
           {/* Section: CRM */}
           <div className="mt-6 mb-2 px-3 flex items-center justify-between">

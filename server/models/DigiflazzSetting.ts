@@ -4,6 +4,8 @@ const digiflazzSettingSchema = new mongoose.Schema({
   username: { type: String, default: "" },
   apiKey: { type: String, default: "" },
   webhookSecret: { type: String, default: "" },
+  isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
-export default mongoose.models.DigiflazzSetting || mongoose.model("DigiflazzSetting", digiflazzSettingSchema);
+const DigiflazzSetting = mongoose.models.DigiflazzSetting || mongoose.model("DigiflazzSetting", digiflazzSettingSchema);
+export default DigiflazzSetting as mongoose.Model<any>;

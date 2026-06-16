@@ -18,4 +18,5 @@ const topupOrderSchema = new mongoose.Schema({
 topupOrderSchema.index({ customerWa: 1 });
 topupOrderSchema.index({ status: 1, createdAt: -1 });
 
-export default mongoose.models.TopupOrder || mongoose.model("TopupOrder", topupOrderSchema);
+const TopupOrder = mongoose.models.TopupOrder || mongoose.model("TopupOrder", topupOrderSchema);
+export default TopupOrder as mongoose.Model<any>;

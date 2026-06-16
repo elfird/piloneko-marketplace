@@ -121,7 +121,9 @@ router.put("/digiflazz/settings", async (req, res) => {
     if (!settings) {
       settings = new DigiflazzSetting(req.body);
     } else {
-      Object.assign(settings, req.body);
+      settings.username = req.body.username !== undefined ? req.body.username : settings.username;
+      settings.apiKey = req.body.apiKey !== undefined ? req.body.apiKey : settings.apiKey;
+      settings.isActive = req.body.isActive !== undefined ? req.body.isActive : settings.isActive;
     }
     await settings.save();
     res.json(settings);

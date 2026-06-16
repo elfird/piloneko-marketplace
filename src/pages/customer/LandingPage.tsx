@@ -17,7 +17,8 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { 
     siteContent, categories, products, testimonials, faqs, banners,
-    flashSaleActive, flashSaleEndsAt, flashSaleItems
+    flashSaleActive, flashSaleEndsAt, flashSaleItems,
+    digiflazzActive
   } = useStore();
 
   const handleNavigate = (view: string, slug?: string) => {
@@ -67,7 +68,7 @@ export default function LandingPage() {
         items={flashSaleItems}
         onSelectProduct={(prod) => navigate(`/product/${prod.slug}`)}
       />
-      <GameTopupSection />
+      {digiflazzActive && <GameTopupSection />}
       <CategorySection
         categories={categories}
         products={products}

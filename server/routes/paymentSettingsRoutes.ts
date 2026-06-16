@@ -182,7 +182,10 @@ router.get('/status', authenticateAdmin, async (_req, res) => {
 export const getMidtransConfig = async () => {
   try {
     const setting = await PaymentSetting.findOne();
-    if (setting && setting.isActive) {
+    if (setting) {
+      if (!setting.isActive) {
+        return { serverKey: '', clientKey: '', isProduction: false, fromDb: true };
+      }
       return {
         serverKey: decryptKey(setting.serverKey),
         clientKey: setting.clientKey,

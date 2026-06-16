@@ -8,4 +8,5 @@ const gameSchema = new mongoose.Schema({
   status: { type: Boolean, default: true },
 }, { timestamps: true });
 
-export default mongoose.models.Game || mongoose.model("Game", gameSchema);
+const Game = mongoose.models.Game || mongoose.model("Game", gameSchema);
+export default Game as mongoose.Model<any>;

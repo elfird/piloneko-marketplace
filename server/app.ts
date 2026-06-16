@@ -90,10 +90,10 @@ connectDB().catch(err => console.error("Initial DB connection failed:", err.mess
 // IMPORT ROUTES
 // ==========================================
 import authRoutes from "./routes/auth.routes";
-import productRoutes from "./routes/productRoutes";
+import { publicCategoryRoutes, adminCategoryRoutes } from "./routes/category.routes";
+import { publicProductRoutes, adminProductRoutes } from "./routes/product.routes";
 import orderRoutes from "./routes/orderRoutes";
 import adminRoutes from "./routes/adminRoutes";
-import categoryRoutes from "./routes/categoryRoutes";
 import publicRoutes from "./routes/publicRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
 import stockRoutes from "./routes/stockRoutes";
@@ -113,8 +113,8 @@ import { globalErrorHandler } from "./middlewares/error.middleware";
 // PUBLIC API ENDPOINTS
 // ==========================================
 app.use("/", seoRoutes); // /sitemap.xml and /robots.txt
-app.use("/api/products", productRoutes);
-app.use("/api/categories", categoryRoutes);
+app.use("/api/products", publicProductRoutes);
+app.use("/api/categories", publicCategoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/topup-games", gameRoutes);
@@ -124,6 +124,8 @@ app.use("/api/topup-orders", topupOrderRoutes);
 // ADMIN API ENDPOINTS (PROTECTED)
 // ==========================================
 app.use("/api/admin", authRoutes); // Auth uses /login and /me
+app.use("/api/admin", adminCategoryRoutes); // Maps exactly to /api/admin/categories and /categories-reorder
+app.use("/api/admin", adminProductRoutes); // Maps exactly to /api/admin/products and packages
 app.use("/api/admin/stocks", stockRoutes);
 app.use("/api/admin/payment-settings", paymentSettingsRoutes);
 app.use("/api/admin/webhook-logs", webhookLogRoutes);

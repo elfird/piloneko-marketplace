@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import { authService } from '../services/auth.service';
+import { IAuthService } from '../interfaces/IAuthService';
 import { ApiResponse } from '../utils/response';
 import { catchAsync } from '../utils/catchAsync';
 
 export class AuthController {
+  constructor(private authService: IAuthService) {}
+
   public login = catchAsync(async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    const result = await authService.login(email, password);
+    const result = await this.authService.login(email, password);
     
     // Set refreshToken as HTTP Only cookie if requested, or just send in response
     if (result.refreshToken) {
@@ -18,19 +20,18 @@ export class AuthController {
       });
     }
 
-    return ApiResponse.success(res, 200, 'Login successful', {
+    // Keep backward compatibility for frontend
+    return res.status(200).json({
       admin: result.admin,
-      token: result.accessToken // Keep 'token' key for backward compatibility or change to 'accessToken'
+      token: result.accessToken
     });
   });
 
   public getMe = catchAsync(async (req: Request, res: Response) => {
     const adminId = (req as any).admin.id;
-    const admin = await authService.getMe(adminId);
+    const admin = await this.authService.getMe(adminId);
     
     // For backward compatibility
     res.json({ authorized: true, admin: { name: admin.name, email: admin.email } });
   });
 }
-
-export const authController = new AuthController();

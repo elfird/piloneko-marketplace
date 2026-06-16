@@ -12,6 +12,8 @@ interface GlobalState {
   flashSaleEndsAt: string;
   flashSaleItems: any[];
   isLoading: boolean;
+  midtransActive: boolean;
+  digiflazzActive: boolean;
   
   // Actions
   setSiteContent: (content: Record<string, string>) => void;
@@ -22,6 +24,8 @@ interface GlobalState {
   setBanners: (banners: any[]) => void;
   setFlashSale: (active: boolean, endsAt: string, items: any[]) => void;
   setLoading: (loading: boolean) => void;
+  setMidtransActive: (active: boolean) => void;
+  setDigiflazzActive: (active: boolean) => void;
 }
 
 export const useStore = create<GlobalState>((set) => ({
@@ -35,6 +39,8 @@ export const useStore = create<GlobalState>((set) => ({
   flashSaleEndsAt: '',
   flashSaleItems: [],
   isLoading: true,
+  midtransActive: true,
+  digiflazzActive: true,
   
   setSiteContent: (content) => set({ siteContent: content }),
   setCategories: (cats) => set({ categories: cats }),
@@ -44,4 +50,6 @@ export const useStore = create<GlobalState>((set) => ({
   setBanners: (banners) => set({ banners: banners }),
   setFlashSale: (active, endsAt, items) => set({ flashSaleActive: active, flashSaleEndsAt: endsAt, flashSaleItems: items }),
   setLoading: (loading) => set({ isLoading: loading }),
+  setMidtransActive: (active) => set({ midtransActive: active }),
+  setDigiflazzActive: (active) => set({ digiflazzActive: active }),
 }));

@@ -9,7 +9,7 @@ import { formatPrice } from "../../lib/utils";
 export default function GameTopupCheckout() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { siteContent } = useStore();
+  const { siteContent, midtransActive } = useStore();
 
   const [game, setGame] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
@@ -72,7 +72,7 @@ export default function GameTopupCheckout() {
     setAccountData(prev => ({ ...prev, [fieldName]: val }));
   };
 
-  const handleCheckout = async (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent, method: "MIDTRANS" | "WHATSAPP" = "MIDTRANS") => {
     e.preventDefault();
     if (!selectedProductId) return setError("Silakan pilih produk topup.");
     
@@ -96,12 +96,20 @@ export default function GameTopupCheckout() {
           accountData,
           buyerName,
           buyerWa,
-          buyerEmail
+          buyerEmail,
+          paymentMethod: method
         })
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal checkout");
+
+      if (method === "WHATSAPP" && data.waUrl) {
+        // Open WhatsApp link in new tab, redirect user to invoice or home
+        window.open(data.waUrl, "_blank");
+        navigate(`/invoice/${data.invoice}?type=topup`);
+        return;
+      }
 
       // Open Snap
       if ((window as any).snap) {
@@ -223,13 +231,27 @@ export default function GameTopupCheckout() {
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              disabled={submitting}
-              className={`w-full py-4 rounded-xl font-orbitron font-black text-lg tracking-wider transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)] ${submitting ? 'bg-cyber-muted text-gray-500 cursor-not-allowed' : 'bg-accent-primary text-cyber-bg hover:scale-[1.02] active:scale-95'}`}
-            >
-              {submitting ? 'MEMPROSES...' : 'BAYAR SEKARANG'}
-            </button>
+            <div className="space-y-3">
+              {midtransActive && (
+                <button 
+                  type="button"
+                  onClick={(e) => handleCheckout(e, "MIDTRANS")}
+                  disabled={submitting}
+                  className={`w-full py-4 rounded-xl font-orbitron font-black text-lg tracking-wider transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)] ${submitting ? 'bg-cyber-muted text-gray-500 cursor-not-allowed' : 'bg-accent-primary text-cyber-bg hover:scale-[1.02] active:scale-95'}`}
+                >
+                  {submitting ? 'MEMPROSES...' : 'BAYAR OTOMATIS (MIDTRANS)'}
+                </button>
+              )}
+
+              <button 
+                type="button"
+                onClick={(e) => handleCheckout(e, "WHATSAPP")}
+                disabled={submitting}
+                className={`w-full py-4 rounded-xl font-orbitron font-black text-lg tracking-wider transition-all border-2 border-[#25D366] bg-[#25D366]/10 text-[#25D366] shadow-[0_0_15px_rgba(37,211,102,0.2)] ${submitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#25D366] hover:text-white hover:scale-[1.02] active:scale-95'}`}
+              >
+                {submitting ? 'MEMPROSES...' : 'BAYAR MANUAL (WHATSAPP)'}
+              </button>
+            </div>
           </form>
         </div>
       </main>

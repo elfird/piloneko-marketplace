@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import { Admin } from '../models/AdminAndOthers';
 import { AppError } from '../utils/AppError';
 import { env } from '../config/env';
+import { IAuthService } from '../interfaces/IAuthService';
 
-export class AuthService {
+export class AuthService implements IAuthService {
   private hashPassword(password: string): string {
     return crypto.createHash('sha256').update(password).digest('hex');
   }
@@ -63,4 +64,4 @@ export class AuthService {
   }
 }
 
-export const authService = new AuthService();
+

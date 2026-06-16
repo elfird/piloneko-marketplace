@@ -9,6 +9,7 @@ import { Notification } from '../models/AdminAndOthers';
 import { WebhookLog } from '../models/WebhookLog';
 import { getMidtransConfig } from './paymentSettingsRoutes';
 import AccountStock from '../models/AccountStock';
+import DigiflazzSetting from '../models/DigiflazzSetting';
 import rateLimit from 'express-rate-limit';
 import { validate, checkoutSchema } from '../validators/apiValidators';
 import { getWhatsAppSettings } from '../services/whatsappService';
@@ -34,10 +35,12 @@ const generateOrderId = () =>
 router.get('/config', async (_req, res) => {
   try {
     const config = await getMidtransConfig();
+    const digiSetting = await DigiflazzSetting.findOne().lean();
     res.json({
       clientKey: config.clientKey,
       isProduction: config.isProduction,
-      isActive: config.serverKey ? true : false
+      isActive: config.serverKey ? true : false,
+      digiflazzActive: digiSetting ? (digiSetting.isActive !== false) : true
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });

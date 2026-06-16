@@ -263,13 +263,14 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
               <div>
                 <label className="block text-cyber-muted text-[10px] font-sans uppercase mb-1.5">Instagram URL</label>
                 <input
                   type="text"
                   value={formData.ig_url || ""}
                   onChange={(e) => handleFieldChange("ig_url", e.target.value)}
+                  placeholder="https://instagram.com/..."
                   className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
                 />
               </div>
@@ -280,16 +281,7 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
                   type="text"
                   value={formData.tiktok_url || ""}
                   onChange={(e) => handleFieldChange("tiktok_url", e.target.value)}
-                  className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-cyber-muted text-[10px] font-sans uppercase mb-1.5">Facebook URL</label>
-                <input
-                  type="text"
-                  value={formData.fb_url || ""}
-                  onChange={(e) => handleFieldChange("fb_url", e.target.value)}
+                  placeholder="https://tiktok.com/..."
                   className="w-full px-3 py-2 bg-cyber-bg border border-accent-primary/25 text-xs text-white"
                 />
               </div>
@@ -303,6 +295,8 @@ export const ContentEditorView: React.FC<ContentEditorProps> = ({ token }) => {
             <span className="block text-[10px] font-orbitron font-bold text-accent-primary uppercase tracking-widest leading-none mb-3">
               // BANK ACCOUNTS & DIGITAL QRIS CONFIG
             </span>
+
+            {/* Midtrans active setting moved to Payment Gateway page */}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
